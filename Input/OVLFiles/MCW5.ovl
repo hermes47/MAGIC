@@ -1,0 +1,14 @@
+# Joining Point Atom
+7
+# bonds across 1/2 zone
+6,7
+# tier one
+22 12 13 14 15 16 17 18 18 20 21 22 23 24 25 26 27 28 29 30 31 32 33
+# tier two
+2 6 11
+# tier three
+1 7
+# tier four
+6 1 4 5 8 9 10
+# tier five
+2 2 3

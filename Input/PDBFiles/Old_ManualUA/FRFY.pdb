@@ -1,0 +1,37 @@
+COMPND    FRFY
+HETATM    1 C1   FRFY    0       5.150   1.154   0.752  1.00  0.00           C  
+HETATM    2 O1   FRFY    0       6.404   1.781   0.500  1.00  0.00           O  
+HETATM    3 H2   FRFY    0       6.348   2.216  -0.367  1.00  0.00           H  
+HETATM    4 O2   FRFY    0       3.755  -0.785   0.232  1.00  0.00           O  
+HETATM    5 C2   FRFY    0       2.639  -0.378  -0.416  1.00  0.00           C  
+HETATM    6 O3   FRFY    0       2.637   0.488  -1.270  1.00  0.00           O  
+HETATM    7 C3   FRFY    0       4.992  -0.109  -0.096  1.00  0.00           C  
+HETATM    8 C6   FRFY    0       1.422  -1.137   0.071  1.00  0.00           C  
+HETATM    9 C5   FRFY    0       0.124  -0.698  -0.612  1.00  0.00           C  
+HETATM   10 C4   FRFY    0      -1.114  -1.400  -0.040  1.00  0.00           C  
+HETATM   11 H16  FRFY    0      -3.638  -2.723  -0.275  1.00  0.00           H  
+HETATM   12 C8   FRFY    0      -2.417  -0.952  -0.731  1.00  0.00           C  
+HETATM   13 C7   FRFY    0      -3.639  -1.635  -0.173  1.00  0.00           C  
+HETATM   14 H17  FRFY    0      -5.484  -1.739   0.785  1.00  0.00           H  
+HETATM   15 C11  FRFY    0      -4.691  -1.073   0.439  1.00  0.00           C  
+HETATM   16 C10  FRFY    0      -4.948   0.389   0.699  1.00  0.00           C  
+HETATM   17 C12  FRFY    0      -6.500   2.384   0.287  1.00  0.00           C  
+HETATM   18 C9   FRFY    0      -6.200   0.916  -0.033  1.00  0.00           C  
+CONECT    1    2
+CONECT    1    7
+CONECT    2    3
+CONECT    4    5
+CONECT    4    7
+CONECT    5    6
+CONECT    5    8
+CONECT    8    9
+CONECT    9   10
+CONECT   10   12
+CONECT   11   13
+CONECT   12   13
+CONECT   13   15
+CONECT   14   15
+CONECT   15   16
+CONECT   16   18
+CONECT   17   18
+END

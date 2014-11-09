@@ -1,0 +1,66 @@
+HEADER    UNCLASSIFIED                            15-Jun-14
+TITLE     UNITED ATOM STRUCTURE FOR MOLECULE _WM                                
+AUTHOR    GROMOS AUTOMATIC TOPOLOGY BUILDER REVISION 2014-05-29
+AUTHOR   2  http://compbio.biosci.uq.edu.au/atb
+HETATM    1   C1 _WMY    0      -4.236   2.831  -0.427  1.00  0.00           C
+HETATM    2   S1 _WMY    0      -2.407   2.828  -0.525  1.00  0.00           S
+HETATM    3   C3 _WMY    0      -1.983   1.456   0.616  1.00  0.00           C
+HETATM    4   C2 _WMY    0      -2.320   0.048   0.123  1.00  0.00           C
+HETATM    5  H20 _WMY    0      -2.364  -0.565  -1.891  1.00  0.00           H
+HETATM    6  H19 _WMY    0      -1.225   0.588  -1.621  1.00  0.00           H
+HETATM    7   N1 _WMY    0      -1.658  -0.253  -1.219  1.00  0.00           N
+HETATM    8  H15 _WMY    0      -3.245  -2.273   1.415  1.00  0.00           H
+HETATM    9  C11 _WMY    0      -1.798  -1.060   1.093  1.00  0.00           C
+HETATM   10   O1 _WMY    0      -2.805  -1.571   1.933  1.00  0.00           O
+HETATM   11  H17 _WMY    0      -1.963  -3.837  -0.455  1.00  0.00           H
+HETATM   12  C12 _WMY    0      -1.181  -2.138   0.177  1.00  0.00           C
+HETATM   13   O2 _WMY    0      -2.284  -2.945  -0.245  1.00  0.00           O
+HETATM   14   C6 _WMY    0      -0.601  -1.392  -1.036  1.00  0.00           C
+HETATM   15   C5 _WMY    0       0.795  -0.867  -0.998  1.00  0.00           C
+HETATM   16   C4 _WMY    0       1.618  -0.888  -2.117  1.00  0.00           C
+HETATM   17   H7 _WMY    0       1.425  -1.257  -3.115  1.00  0.00           H
+HETATM   18   N5 _WMY    0       3.360   0.952   1.625  1.00  0.00           N
+HETATM   19  C10 _WMY    0       2.133   0.574   2.073  1.00  0.00           C
+HETATM   20   N4 _WMY    0       1.199  -0.008   1.382  1.00  0.00           N
+HETATM   21   C9 _WMY    0       1.568  -0.269   0.059  1.00  0.00           C
+HETATM   22  H14 _WMY    0       1.944   0.816   3.118  1.00  0.00           H
+HETATM   23  H13 _WMY    0       4.005   1.339   2.302  1.00  0.00           H
+HETATM   24   N3 _WMY    0       2.823  -0.340  -1.789  1.00  0.00           N
+HETATM   25   C8 _WMY    0       2.810   0.043  -0.468  1.00  0.00           C
+HETATM   26   C7 _WMY    0       3.942   0.647   0.309  1.00  0.00           C
+HETATM   27   N2 _WMY    0       5.143  -0.176   0.489  1.00  0.00           N
+HETATM   28  H12 _WMY    0       3.598  -0.235  -2.430  1.00  0.00           H
+HETATM   29  H11 _WMY    0       5.739  -0.118  -0.336  1.00  0.00           H
+HETATM   30  H10 _WMY    0       4.885  -1.156   0.610  1.00  0.00           H
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2    4
+CONECT    4    3    7    9
+CONECT    5    7
+CONECT    6    7
+CONECT    7    4    5    6   14
+CONECT    8   10
+CONECT    9    4   10   12
+CONECT   10    8    9
+CONECT   11   13
+CONECT   12    9   13   14
+CONECT   13   11   12
+CONECT   14    7   12   15
+CONECT   15   14   16   21
+CONECT   16   15   17   24
+CONECT   17   16
+CONECT   18   19   23   26
+CONECT   19   18   20   22
+CONECT   20   19   21
+CONECT   21   15   20   25
+CONECT   22   19
+CONECT   23   18
+CONECT   24   16   25   28
+CONECT   25   21   24   26
+CONECT   26   18   25   27
+CONECT   27   26   29   30
+CONECT   28   24
+CONECT   29   27
+CONECT   30   27
+END
+

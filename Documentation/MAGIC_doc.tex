@@ -1,0 +1,142 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[a4paper,11pt,oneside,openright]{book}
+
+\newcommand*{\plogo}{\fbox{$\mathcal{MUP}$}} % Generic publisher logo
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{a4paper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for for rotated page geometry
+\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+\usepackage{amsmath,xfrac,anyfontsize,mathptmx,t1enc,color}
+\usepackage[section]{placeins}
+\usepackage{hyperref}
+\usepackage{setspace}
+\onehalfspacing
+
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{3}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\newcommand*{\titleGP}{\begingroup % Create the command for including the title page in the document
+\centering % Center all text
+\vspace*{\baselineskip} % White space at the top of the page
+
+\rule{\textwidth}{1.6pt}\vspace*{-\baselineskip}\vspace*{2pt} % Thick horizontal line
+\rule{\textwidth}{0.4pt}\\[\baselineskip] % Thin horizontal line
+
+{\LARGE MAGIC AUTOMATED\\ GROMOS \\[0.3\baselineskip] LIPID CONSTRUCTOR}\\[0.2\baselineskip] % Title
+
+\rule{\textwidth}{0.4pt}\vspace*{-\baselineskip}\vspace{3.2pt} % Thin horizontal line
+\rule{\textwidth}{1.6pt}\\[\baselineskip] % Thick horizontal line
+
+\scshape % Small caps
+An automated system to parametrise the world\\ % Tagline(s) or further description
+Documentation \\[\baselineskip] % Tagline(s) or further description
+Albany, New Zealand,  2014\par % Location and year
+
+\vspace*{2\baselineskip} % Whitespace between location/year and editors
+
+Edited by \\[\baselineskip]
+{\Large IVAN WELSH \par} % Editor list
+{\itshape Massey University \\ Albany\par} % Editor affiliation
+
+\vfill % Whitespace between editor names and publisher logo
+
+\plogo \\[0.3\baselineskip] % Publisher logo
+{\scshape 2014} \\[0.3\baselineskip] % Year published
+{\large MASSEY UNIVERSITY PRESS}\par % Publisher
+
+\endgroup}
+
+%----------------------------------------------------------------------------------------
+%	BLANK DOCUMENT
+%----------------------------------------------------------------------------------------
+
+\begin{document} 
+\frontmatter
+\pagestyle{empty} % Removes page numbers
+\titleGP % This command includes the title page
+\newpage
+\pagestyle{plain}
+\tableofcontents
+\mainmatter
+\chapter{Introduction}\label{ch:introduction}
+The Magic Automated GROMOS Lipid Constructor, or MAGIC, is a series of python scripts designed to provide a means to create parameters for any conceivable molecule. The original brief is to construct parameters for any given lipid molecule, but this ability will be extended to being able to parametrise any given molecule.
+\par{The working force behind MAGIC is the ATB, an automated topology builder produced and maintained by University of Queensland. ATB is provided with a PDB structure of a given molecule. Using this structure, a number of quantum mechanical calculations are performed and through matching those results to the existing parameters in the GROMOS forcefield, or generating new ones if a suitable one does not already exist, a parameter set for the molecule is generated.}
+\par{It is from these parameter sets that MAGIC takes over. For various reasons, the ATB can only provide high-level, and thus reliable, results for molecules containing less than 40 atoms. Most biochemical molecules, including lipids, have many more than 40 atoms, leaving the results from the ATB to be unreliable. The aim of MAGIC is to take these ATB generated parameters and join them together in a sensible manner in order to obtain larger molecules with reliable results.
+\chapter{Workflow}\label{ch:workflow}
+\chapter{Code Documentation}\label{ch:codedoc}
+Details and usage of all functions present in MAGIC are given here. Each .py file is detailed in a separate section, with a file description followed by a sub-sectional breakdown of each function. In the case of classes being present, the classes are broken into sub-sections, with the functions being broken down into sub-sub-sections.
+\section{buildlipid.py}\label{sec:buildlipid}
+\section{config.py}\label{sec:config}
+Contains various configuration options and globally accessible data storage points.
+\subsection{Configuration Constants}
+\paragraph[\texttt{STRING\_BREAK\_CHARACTERS}]{\texttt{config.}\textbf{STRING\_BREAK\_CHARACTERS}}
+\subparagraph{}A string of the opening characters for various types of molecule definition through strings. See section [ADDSECTIONHERE] for more information. Default string is \texttt{\{(<}.
+\paragraph[\texttt{RANDOM\_NAME\_CHARS}]{\texttt{config.}\textbf{RANDOM\_NAME\_CHARS}} 
+\subparagraph{}A string of all the possible characters to be used when generating new file names for the joint molecules. Default string is all upper case alphanumeric characters.
+\paragraph[\texttt{NAME\_LENGTH}]{\texttt{config.}\textbf{NAME\_LENGTH}}
+\subparagraph{}The number of characters in the file names of the fragment molecules. Default is 4.
+\paragraph[\texttt{NUM\_TIERS}]{\texttt{config.}\textbf{NUM\_TIERS}} 
+\subparagraph{}The number of tiers used in the OVL files to determine overlapping rules. Default is 5. Caution is advised when altering this constant as OVL files will need to be updated and, more importantly, the use of the default 5 is fairly hard coded into MAGIC.
+\paragraph[\texttt{ROOT\_DIRECTORY}]{\texttt{config.}\textbf{ROOT\_DIRECTORY}} 
+\subparagraph{}The directory from which the magic.py script is run originally. It is set to the current directory using the \texttt{os.getcwd()} function. Work directory does not change during a MAGIC process. 
+\paragraph[\texttt{SAVED\_PICKLED\_FILES}]{\texttt{config.}\textbf{SAVED\_PICKLED\_FILES}} 
+\subparagraph{}The list of pickled files present in the \texttt{config.ROOT\_DIRECTORY/PickledFiles/} directory. It is generated each time the constant is called using the \texttt{os.listdir(...)} function.
+\paragraph[\texttt{ATOMIC\_RADII}]{\texttt{config.}\textbf{ATOMIC\_RADII}}
+\subparagraph{}A dictionary of atomic radii used to determine if atoms will overlap in a joint molecule and so if a rotation is needed. Values are measured in angstroms (\AA) and sourced from the Wikipedia article. {\color{red}Change to data book}. The values present by default are given in Table~\ref{tb:atomicradii} below.
+\begin{table}[!htb]
+\caption{Atoms and their atomic radius store by default in MAGIC. Radius is in \AA.}\label{tb:atomicradii}
+\centering
+\begin{tabular}{| l | r |}
+\hline
+Atom Type & Radius \\
+\hline\hline
+Hydrogen & 0.53 \\
+Carbon & 0.67 \\
+Nitrogen & 0.56 \\
+Oxygen & 0.48 \\
+Fluorine & 0.42 \\
+Sodium & 1.90 \\
+Magnesium & 1.45 \\
+Silicon & 1.11 \\
+Phosporus & 0.98 \\
+Sulfur & 0.88 \\
+Chlorine & 0.79 \\
+Argon & 0.71 \\
+Calcium & 1.94 \\
+Iron & 1.56 \\
+Copper & 1.45 \\
+Zinc & 1.42 \\
+Bromine & 0.94 \\
+\hline
+\end{tabular}
+\end{table}
+\subsection{Global Storage}
+\paragraph[\texttt{MTB\_PDB\_ROOT\_NAMES}]{\texttt{config.}\textbf{MTB\_PDB\_ROOT\_NAMES}}
+\subparagraph{}A list of the unique root names of molecules present in the various data directories. It is generated by the initial call to magic, and added to as files are saved to the output directory.
+\paragraph[\texttt{CHECKED\_ATOMS}]{\texttt{config.}\textbf{CHECKED\_ATOMS}}
+\subparagraph{}A list of the atom indices that have been checked by the \texttt{genmethods.graphSearch()} function during the joining process. It is wiped clean at the start of each initial call to \texttt{graphSearch()}. Existence is so that infinite loop recursion does not occur.
+\paragraph[\texttt{LOADED\_MOLECULES}]{\texttt{config.}\textbf{LOADED\_MOLECULES}}
+\subparagraph{}A dictionary of all the molecules loaded into memory. Molecules are keyed by name. Each molecule, either created or loaded, is added to the dictionary. If a given key already exists in the dictionary, the molecule isn't loaded again/the random new name is regenerated.
+\section{connect.py}\label{sec:connect}
+\section{genmethods.py}\label{sec:genmethods}
+\section{ifp.py}\label{sec:ifp}
+\section{magic.py}\label{sec:magic}
+Wrapper script used to call \texttt{build lipid.MAGIC(...)} execution function with the provided command line arguments.
+\subsection[\texttt{main()}]{\texttt{magic.}\textbf{main(}\textit{\texttt{argv}}\textbf{)}}
+\subparagraph{Input}
+\textit{\texttt{argv}}: command line arguments. Usage is:\\  \texttt{magic.py -s <StringToParse> -i <IFPFile>}
+\subparagraph{Functionality}
+Assigns default values to the \texttt{ifpfile} and \texttt{pString} parameters. Generates the list of unique molecule names from all the files in the various data directories, assigning them to the \texttt{config.MTB\_PDB\_ROOT\_NAMES} global data storage point. Parses the command line arguments, setting \texttt{ifpfile} and \texttt{pString} to their requested values. Finally calls \texttt{buildlipid.MAGIC(ifpfile, pString)} to begin the connection process.
+\section{molecule.py}\label{sec:molecule}
+\section{rotations.py}\label{sec:rotations}
+\end{document}

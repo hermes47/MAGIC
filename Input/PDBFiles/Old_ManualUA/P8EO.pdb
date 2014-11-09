@@ -1,0 +1,41 @@
+COMPND    P8EO
+HETATM    1 C7   P8EO    0      -1.051   3.981  -0.227  1.00  0.00           C  
+HETATM    2 C6   P8EO    0      -0.291   2.784  -0.795  1.00  0.00           C  
+HETATM    3 C4   P8EO    0      -0.453   1.521   0.020  1.00  0.00           C  
+HETATM    4 O2   P8EO    0       0.196   0.494  -0.548  1.00  0.00           O  
+HETATM    5 C3   P8EO    0       0.313  -0.777   0.152  1.00  0.00           C  
+HETATM    6 O4   P8EO    0      -1.081   1.432   1.067  1.00  0.00           O  
+HETATM    7 C2   P8EO    0       3.939  -0.516   0.042  1.00  0.00           C  
+HETATM    8 O1   P8EO    0       2.642  -0.364   0.400  1.00  0.00           O  
+HETATM    9 O5   P8EO    0       4.318  -1.383  -0.720  1.00  0.00           O  
+HETATM   10 C1   P8EO    0       1.706  -1.296  -0.171  1.00  0.00           C  
+HETATM   11 C9   P8EO    0       6.181   0.672   0.059  1.00  0.00           C  
+HETATM   12 C8   P8EO    0       4.816   0.510   0.729  1.00  0.00           C  
+HETATM   13 C5   P8EO    0      -0.773  -1.751  -0.307  1.00  0.00           C  
+HETATM   14 H17  P8EO    0      -4.790  -2.365  -0.392  1.00  0.00           H  
+HETATM   15 O8   P8EO    0      -3.248  -0.392  -1.379  1.00  0.00           O  
+HETATM   16 O6   P8EO    0      -4.489  -1.873   0.393  1.00  0.00           O  
+HETATM   17 P1   P8EO    0      -3.292  -0.864   0.029  1.00  0.00           P  
+HETATM   18 O3   P8EO    0      -1.953  -1.627   0.511  1.00  0.00           O  
+HETATM   19 H16  P8EO    0      -2.715   0.749   1.316  1.00  0.00           H  
+HETATM   20 O7   P8EO    0      -3.532   0.210   1.188  1.00  0.00           O  
+CONECT    1    2
+CONECT    2    3
+CONECT    3    4
+CONECT    3    6
+CONECT    4    5
+CONECT    5   10
+CONECT    5   13
+CONECT    7    8
+CONECT    7    9
+CONECT    7   12
+CONECT    8   10
+CONECT   11   12
+CONECT   13   18
+CONECT   14   16
+CONECT   15   17
+CONECT   16   17
+CONECT   17   18
+CONECT   17   20
+CONECT   19   20
+END
