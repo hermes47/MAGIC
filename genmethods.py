@@ -3,9 +3,8 @@ from random import randrange
 from config import NAME_LENGTH, RANDOM_NAME_CHARS, MTB_PDB_ROOT_NAMES, NUM_TIERS, CHECKED_ATOMS, LOADED_MOLECULES, ROOT_DIRECTORY, STRING_BREAK_CHARACTERS, ATOMIC_RADII, CHARGE_RULES
 from copy import copy
 from builtins import range
-import numpy, itertools
+import numpy
 import os
-from numpy import dtype
 ''' General purpose methods that aren't specific  to any given class '''
   
 ''' Method to calculate the distance between 2 sets of XYZ data.
@@ -27,9 +26,7 @@ def genRandomString():
             for direct in dirs:
                 savedFiles.append(direct)
         for _ in range(NAME_LENGTH):
-            # pick a random char from the list
             randStr += RANDOM_NAME_CHARS[randrange(0,len(RANDOM_NAME_CHARS))]
-        # only return if the string isn't already on the list
         if (randStr not in MTB_PDB_ROOT_NAMES) and (randStr not in savedFiles):
             MTB_PDB_ROOT_NAMES.append(randStr)
             return randStr
@@ -53,8 +50,7 @@ def loadFile(rootName, folder, fileExtension, removeComments=True):
         return shortFile
     else: return file
 
-''' Method for parsing an IFP file
-'''
+''' Method for parsing an IFP file. '''
 def parseIFP(rootName, folder):
     ifpData = loadFile(rootName, "Input/", ".ifp", True)
 

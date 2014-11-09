@@ -1,13 +1,10 @@
 import numpy as np
 
-
-def crossProductMatrix(vectorInput):
-    '''
-    Returns the cross product matrix of a vector, ie the matrix:
+''' Returns the cross product matrix of a vector, ie the matrix:
      0  -z   y
      z   0  -x
-    -y   x   0 
-    '''
+    -y   x   0   '''
+def crossProductMatrix(vectorInput):
     if vectorInput.shape == (1,3):
         vectorInput = vectorInput.T
         x = vectorInput[0,0]
@@ -20,25 +17,22 @@ def crossProductMatrix(vectorInput):
     xProdMat = np.array([[0,-z,y],[z,0,-x],[-y,x,0]])
     return xProdMat
 
+''' Returns the normalised cross product of two vectors. '''
 def rotationVectorDetermine(rotMolVec, refMolVec):
-    # determine the rotation vector
-    #w = np.cross(rotMolVec,refMolVec)
     w = np.cross(refMolVec, rotMolVec)
-    # normalise the rotation vector
     w = w/np.linalg.norm(w)
-    return w #np.array([1,1,1])/np.linalg.norm(np.array([1,1,1]))
+    return w
 
+''' Returns the angle between two vectors. If the optional delta argument is supplied,
+delta is added to each component of the first vector, and the angle returned is the angle
+between that modified vector and the second one.'''
 def rotationAngleDetermine(rotMolVec, refMolVec, delta=False):
     if delta:
-        # add same amount to each of x,y,z, such that dx^2 + dy^2 + dz^2 = delta
         for i in (0,1,2):
             if rotMolVec[i] > refMolVec[i]: rotMolVec[i] += np.sqrt(abs(delta/3.))
             elif rotMolVec[i] < refMolVec[i]: rotMolVec[i] -= np.sqrt(abs(delta/3.))
-            
-    # determine the new angle between the two
     newTheta = np.arccos(np.dot(rotMolVec,refMolVec)/(np.linalg.norm(rotMolVec)*np.linalg.norm(refMolVec)))
-    # return the target theta
-    return newTheta #1*np.pi/180
+    return newTheta
 
 def rotateMolecule(rotMol, refMol, rotMolAtmIndex=-1, refMolAtmIndex=-1, displacement=0, vect=np.array([0,0,0]), ang=None, applyTo=None):
     rotMolVec = vect
