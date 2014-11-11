@@ -24,10 +24,9 @@ Outcome:        Connect the MTB's within the < and > such that a ring is formed.
                 except for the first and final elements. The second joining point of BBBB is connected to the first
                 of CCCC, etc; and the second joining point of EEEE is connected to the first of BBBB
 '''
-from config import NAME_LENGTH, LOADED_MOLECULES, MOLECULE_PREALIGNMENT
+from config import NAME_LENGTH, LOADED_MOLECULES, MOLECULE_PREALIGNMENT, FURTHER_ALIGNMENT_STYLE
 from molecule import Molecule
 import genmethods, rotations
-import numpy as np
 
 
 ''' initStringParse.
@@ -227,12 +226,17 @@ def simpleJoin(moleculeA, moleculeB, AJoinPos = 0, BJoinPos = 0):
             vecB = molB.getAtm_Index(tupB[0]).getXYZ(True) - molB.getAtm_Index(tupB[1]).getXYZ(True)
         else:
             vecB = molB.getAtm_Index(tupB[1]).getXYZ(True) - molB.getAtm_Index(tupB[0]).getXYZ(True)
-        rotAxis = rotations.rotationVectorDetermine(vecA, vecB)
-        rotAngle = rotations.rotationAngleDetermine(vecA, vecB)
         if abSwitch:
-            rotations.rotateMolecule(molB, molA, vect=rotAxis, ang=rotAngle)
+            rotAxis = rotations.normCrossProduct(vecA, vecB)
+            rotAngle = rotations.vectAngle(vecA, vecB)
         else:
-            rotations.rotateMolecule(molA, molB, vect=rotAxis, ang=rotAngle)
+            rotAxis = rotations.normCrossProduct(vecB, vecA)
+            rotAngle = rotations.vectAngle(vecB, vecA)
+        rotMat = rotations.rotationMatrix(rotAxis, rotAngle)    
+        if abSwitch:
+            molA.rotate(rotMat)
+        else:
+            molB.rotate(rotMat)
     # copy the data from molA to jointMol, keeping all bonds etc with at least one atom not deleted
     print("-Copying data")
     jointMol = genmethods.copyData(molA, Molecule(), AJoinPos, atmsToDeleteA, True)
@@ -261,12 +265,18 @@ def simpleJoin(moleculeA, moleculeB, AJoinPos = 0, BJoinPos = 0):
         print("--YES")
         rotCount = 0
         while rotNeedInfos[0]:
-            if abSwitch:
-                rotations.rotateMolecule(jointMol, tempMol, rotMolAtmIndex=rotNeedInfos[1], refMolAtmIndex=rotNeedInfos[2], displacement=rotNeedInfos[3]-rotNeedInfos[4])
+            if FURTHER_ALIGNMENT_STYLE == "sweetspot":
+                if abSwitch:
+                    rotations.rotateMolecule(jointMol, tempMol, rotMolAtmIndex=rotNeedInfos[1], refMolAtmIndex=rotNeedInfos[2], displacement=rotNeedInfos[3]-rotNeedInfos[4])
+                    rotCount += 1
+                elif not abSwitch:
+                    rotations.rotateMolecule(tempMol, jointMol, rotMolAtmIndex=rotNeedInfos[2], refMolAtmIndex=rotNeedInfos[1], displacement=rotNeedInfos[3]-rotNeedInfos[4])
+                    rotCount += 1
+            elif FURTHER_ALIGNMENT_STYLE == "dihedral":
+                print("Doing dihedral rotations")
                 rotCount += 1
-            elif not abSwitch:
-                rotations.rotateMolecule(tempMol, jointMol, rotMolAtmIndex=rotNeedInfos[2], refMolAtmIndex=rotNeedInfos[1], displacement=rotNeedInfos[3]-rotNeedInfos[4])
-                rotCount += 1
+                # get the dihedral to rotate about
+                print(genmethods.atomConnectivity(rotNeedInfos[2], tempMol, kind="dihedrals"))
             rotNeedInfos = genmethods.rotateNeeded(jointMol, tempMol)
         print("---%d rotations were performed to obtain non-overlapping structures" % rotCount)
     else:

@@ -203,12 +203,21 @@ class Molecule(object):
         self.transverseBonds = l 
     ''' Methods for higher level operations '''
     
-    ''' method to centre the molecule, either on a given atmIndex or a given set of XYZ coordinates'''
+    ''' Method to center the molecule, either on a given atmIndex or a given set of XYZ coordinates'''
     def centreOn(self, data):
         if type(data) is int: # get the required data
             data = self.getAtm_Index(data).getXYZ()
         for atom in self.atms:
             atom.setXYZ([a-b for a, b in zip(atom.getXYZ(),data)])
+    ''' Method to rotate the molecule, or defined part there of, using the given rotation matrix. '''
+    def rotate(self, rotMat, atms=None):
+        if atms is None:
+            atms = []
+            for num in range(self.getNumAtms()): atms.append(self.getAtms()[num].getAtmIndex())
+        for atm in self.getAtms():
+            if atm.getAtmIndex() in atms:
+                atm.setXYZ(numpy.dot(rotMat,atm.getXYZ(vec=True)),vec=True)
+            
     ''' method for deleting an atom from the molecule. Also deletes any bonds that the molecule is in 
     and shifts the bond indexs to account for the deleted bonds'''
     ##### DEPRECITED #####
@@ -369,6 +378,8 @@ class Atom(object):
         self.numNonBondExclude = 0
         self.nonBondExcludeAtms = []
         self.tier = 0
+        # tracking data
+        self.addedCharge = 0.
     def __repr__(self):
         return repr((self.atmIndex, self.charge, self.chargeGroupCode))
     ''' Methods for getting the indivdual data points from with the atom class '''
@@ -473,6 +484,9 @@ class Atom(object):
             self.setNonBondExcludeAtms(list(map(int,dataList[5:])))
     def setTier(self, t):
         self.tier = t
+    def addCharge(self, charge):
+        self.addedCharge += charge
+        self.setCharge(self.getCharge()+charge)
     ''' Methods for higher order operations '''
     def getPDBString(self):
         #123456|78901|2|3456|7890|1|23456|7890|12345678|90123456|78901234|567890|123456|789012|3456|78|90
