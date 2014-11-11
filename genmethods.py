@@ -575,7 +575,7 @@ def leastSquaresCharges(molecule, targetCharge):
     # and use it to find the excess/deficient charge on the molecule
     requiredCharge = targetCharge - currentCharge
 
-    
+    print(requiredCharge)
     # build the matrix and vector based on the first two, always there rules
     coefficientMatrix = numpy.ones((1,molecule.getNumAtms())) # combined with generation of sumVector
     sumVector = numpy.array((requiredCharge))     # adds rule 2 in
@@ -637,10 +637,8 @@ def leastSquaresCharges(molecule, targetCharge):
     numDecPoint = 6
     for atm in molecule.getAtms():
         if atm.getAtmPos() == molecule.getNumAtms(): #last atom
-            #not goina to work for charged molecules. just saying
             additionalCharge = round(results[0][atm.getAtmIndex()] + rollOverCharge,numDecPoint)
-            atm.setCharge(atm.getCharge() + additionalCharge)
-            print("----%f charge dispersed to atmID %d" %(additionalCharge, atm.getAtmPos()))
+            atm.addCharge(additionalCharge)
             realTotalCharge = 0.
             for atom in molecule.getAtms():
                 realTotalCharge += atom.getCharge()
@@ -651,11 +649,9 @@ def leastSquaresCharges(molecule, targetCharge):
                 print("----additional %f charge added to atmId %d" %(-realTotalCharge, atm.getAtmPos()))
         else:
             additionalCharge = round(results[0][atm.getAtmIndex()] + rollOverCharge,numDecPoint)
-            atm.setCharge(atm.getCharge() + additionalCharge)
+            atm.addCharge(additionalCharge)
             rollOverCharge = results[0][atm.getAtmIndex()] + rollOverCharge - additionalCharge
-            #print("----%f charge dispersed to atmID %d" %(additionalCharge, atm.getAtmPos()))
     ''' End of funky logic '''
-    #print(results)
     
 ''' Method for reorganising charge groups due to changing charges.
     Will use bastardised ATB code to do the assignments. '''
@@ -814,6 +810,34 @@ def rotateNeeded(molA, molB):
             if actualLength < minLength:
                 return True, atmOne.getAtmIndex(), atmTwo.getAtmIndex(), minLength, actualLength
     return False, 0, 0
+
+''' Method to return all the connectivity involving a given atmID, with that atmID in a terminal position.
+Returns all bonds, angles and dihedrals (regardless of if they're assigned in the force field or not) by
+default, or just one type of connectivity'''
+def atomConnectivity(atmID, mol, kind="all"):
+    # search for all bond involving the atmID
+    bonds = []
+    for bond in mol.getBonds():
+        if bond.getAtmAIndex() == atmID: bonds.append([atmID,bond.getAtmBIndex()])
+        elif bond.getAtmBIndex() == atmID: bonds.append([atmID,bond.getAtmAIndex()])
+    if kind == "bonds":
+        return bonds
+    angles = []
+    for source in bonds:
+        for bond in mol.getBonds():
+            if bond.getAtmAIndex() == source[1] and bond.getAtmBIndex() not in source: angles.append([atmID,source[1],bond.getAtmBIndex()])
+            elif bond.getAtmBIndex() == source[1] and bond.getAtmAIndex() not in source: angles.append([atmID,source[1],bond.getAtmAIndex()])
+    if kind == "angles":
+        return angles
+    dihedrals = []
+    for source in angles:
+        for bond in mol.getBonds():
+            if bond.getAtmAIndex() == source[2] and bond.getAtmBIndex() not in source: dihedrals.append([atmID,source[1],source[2],bond.getAtmBIndex()])
+            elif bond.getAtmBIndex() == source[2] and bond.getAtmAIndex() not in source: dihedrals.append([atmID,source[1],source[2],bond.getAtmAIndex()])
+    if kind == "dihedrals":
+        return dihedrals
+    return (bonds,angles,dihedrals)
+
     
 if __name__ == "__main__":
     words = stringSanitation("AAAA{5}{BBBB{17}{12fr}CCCC(ZZZZ<MGHTISSK>(1234)AAAA)}")

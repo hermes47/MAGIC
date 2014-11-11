@@ -378,6 +378,8 @@ class Atom(object):
         self.numNonBondExclude = 0
         self.nonBondExcludeAtms = []
         self.tier = 0
+        # tracking data
+        self.addedCharge = 0.
     def __repr__(self):
         return repr((self.atmIndex, self.charge, self.chargeGroupCode))
     ''' Methods for getting the indivdual data points from with the atom class '''
@@ -482,6 +484,9 @@ class Atom(object):
             self.setNonBondExcludeAtms(list(map(int,dataList[5:])))
     def setTier(self, t):
         self.tier = t
+    def addCharge(self, charge):
+        self.addedCharge += charge
+        self.setCharge(self.getCharge()+charge)
     ''' Methods for higher order operations '''
     def getPDBString(self):
         #123456|78901|2|3456|7890|1|23456|7890|12345678|90123456|78901234|567890|123456|789012|3456|78|90

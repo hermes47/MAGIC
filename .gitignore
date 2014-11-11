@@ -14,3 +14,5 @@ Documentation/MAGIC_doc.aux
 OutputFiles/*
 
 PickledFiles/*
+
+EnergyData/RawData/*
