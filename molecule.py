@@ -203,12 +203,21 @@ class Molecule(object):
         self.transverseBonds = l 
     ''' Methods for higher level operations '''
     
-    ''' method to centre the molecule, either on a given atmIndex or a given set of XYZ coordinates'''
+    ''' Method to center the molecule, either on a given atmIndex or a given set of XYZ coordinates'''
     def centreOn(self, data):
         if type(data) is int: # get the required data
             data = self.getAtm_Index(data).getXYZ()
         for atom in self.atms:
             atom.setXYZ([a-b for a, b in zip(atom.getXYZ(),data)])
+    ''' Method to rotate the molecule, or defined part there of, using the given rotation matrix. '''
+    def rotate(self, rotMat, atms=None):
+        if atms is None:
+            atms = []
+            for num in range(self.getNumAtms()): atms.append(self.getAtms()[num].getAtmIndex())
+        for atm in self.getAtms():
+            if atm.getAtmIndex() in atms:
+                atm.setXYZ(numpy.dot(rotMat,atm.getXYZ(vec=True)),vec=True)
+            
     ''' method for deleting an atom from the molecule. Also deletes any bonds that the molecule is in 
     and shifts the bond indexs to account for the deleted bonds'''
     ##### DEPRECITED #####

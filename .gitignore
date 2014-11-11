@@ -11,4 +11,6 @@ Documentation/MAGIC_doc.log
 
 Documentation/MAGIC_doc.aux
 
-OutputFiles
+OutputFiles/*
+
+PickledFiles/*

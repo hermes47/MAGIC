@@ -227,12 +227,13 @@ def simpleJoin(moleculeA, moleculeB, AJoinPos = 0, BJoinPos = 0):
             vecB = molB.getAtm_Index(tupB[0]).getXYZ(True) - molB.getAtm_Index(tupB[1]).getXYZ(True)
         else:
             vecB = molB.getAtm_Index(tupB[1]).getXYZ(True) - molB.getAtm_Index(tupB[0]).getXYZ(True)
-        rotAxis = rotations.rotationVectorDetermine(vecA, vecB)
-        rotAngle = rotations.rotationAngleDetermine(vecA, vecB)
+        rotAxis = rotations.normCrossProduct(vecA, vecB)
+        rotAngle = rotations.vectAngle(vecA, vecB)
+        rotMat = rotations.rotationMatrix(rotAxis, rotAngle)
         if abSwitch:
-            rotations.rotateMolecule(molB, molA, vect=rotAxis, ang=rotAngle)
+            molB.rotate(rotMat)
         else:
-            rotations.rotateMolecule(molA, molB, vect=rotAxis, ang=rotAngle)
+            molA.rotate(rotMat)
     # copy the data from molA to jointMol, keeping all bonds etc with at least one atom not deleted
     print("-Copying data")
     jointMol = genmethods.copyData(molA, Molecule(), AJoinPos, atmsToDeleteA, True)
