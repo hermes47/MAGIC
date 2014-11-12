@@ -27,6 +27,7 @@ Outcome:        Connect the MTB's within the < and > such that a ring is formed.
 from config import NAME_LENGTH, LOADED_MOLECULES, MOLECULE_PREALIGNMENT, FURTHER_ALIGNMENT_STYLE
 from molecule import Molecule
 import genmethods, rotations
+import numpy as np
 
 
 ''' initStringParse.
@@ -259,25 +260,29 @@ def simpleJoin(moleculeA, moleculeB, AJoinPos = 0, BJoinPos = 0):
     jointMol = genmethods.shiftIndices(jointMol, changeMatrixA)
     # determine if there is need of a rotation for the original B molecule, based on overlapping
     print("-Determining if further molecule rotation is needed...")
-    rotNeedInfos = genmethods.rotateNeeded(jointMol, tempMol)
+    rotNeed, atmA, atmB, delta = genmethods.rotateNeeded(jointMol, tempMol)
     #rotNeedInfos = (False,False)
-    if rotNeedInfos[0]:
+    if rotNeed and FURTHER_ALIGNMENT_STYLE is not "none":
         print("--YES")
         rotCount = 0
-        while rotNeedInfos[0]:
+        while rotNeed:
             if FURTHER_ALIGNMENT_STYLE == "sweetspot":
-                if abSwitch:
-                    rotations.rotateMolecule(jointMol, tempMol, rotMolAtmIndex=rotNeedInfos[1], refMolAtmIndex=rotNeedInfos[2], displacement=rotNeedInfos[3]-rotNeedInfos[4])
-                    rotCount += 1
-                elif not abSwitch:
-                    rotations.rotateMolecule(tempMol, jointMol, rotMolAtmIndex=rotNeedInfos[2], refMolAtmIndex=rotNeedInfos[1], displacement=rotNeedInfos[3]-rotNeedInfos[4])
-                    rotCount += 1
+                vecB = jointMol.getAtmWithIndex(atmA).getXYZ(vec=True)
+                vecA = tempMol.getAtmWithIndex(atmB).getXYZ(vec=True)
+                for i in (0,1,2):
+                    if vecA[i] > vecB[i]: vecA[i] += np.sqrt(abs(delta/3.))
+                    elif vecA[i] <= vecB[i]: vecA[i] -= np.sqrt(abs(delta/3.))
+                axis = rotations.normCrossProduct(vecA,vecB)
+                ang = rotations.vectAngle(vecA, vecB)
+                rotMat = rotations.rotationMatrix(axis, ang)
+                jointMol.rotate(rotMat)
+                rotCount += 1
             elif FURTHER_ALIGNMENT_STYLE == "dihedral":
                 print("Doing dihedral rotations")
                 rotCount += 1
                 # get the dihedral to rotate about
-                print(genmethods.atomConnectivity(rotNeedInfos[2], tempMol, kind="dihedrals"))
-            rotNeedInfos = genmethods.rotateNeeded(jointMol, tempMol)
+                print(genmethods.atomConnectivity(atmB, tempMol, kind="dihedrals"))
+            rotNeed, atmA, atmB, delta = genmethods.rotateNeeded(jointMol, tempMol)
         print("---%d rotations were performed to obtain non-overlapping structures" % rotCount)
     else:
         print("--NO")

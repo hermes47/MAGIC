@@ -1,0 +1,170 @@
+TITLE
+File          : 54a7.mtb
+Force field   : 54A7 (condensed-phase simulations)
+Reference     : Schmid et al. Eur. Biophys. J. 2011, 40, 843-856
+File content  : Molecular topology building blocks (alpha amino acids, nucleic acids, lipids)
+Format        : GROMOS11
+Initial file  : WFVG, AM, CO, JD, Zuerich, September 2010
+Time stamp    : PHH, Fri Aug  3 17:23:08 CEST 2012
+Remark        : The main general changes from the 53A(B)6 force-field
+                version to the 54A(B)7 force-field version involve
+                - changed phi/psi torsional parameters of peptides
+                - new choline CH3 atom type
+                - new VdW parameters for Na+ and Cl-
+                - addition of the AIB building block
+Remark        : PHH, May 2011
+                - finalized GROMOS11 file distribution
+                - enforced sequential ordering by (central) atom numbers in covalent terms
+                  for all files (no effect on GROMOS11 make_top; make_top enforced it anyway,
+                  but now, we avoid the big list of warnings)
+Modifications : [list below changes after May 2011 - with initials, location and date - and update time stamp]
+PHH, 15.09.2011: Corrected the phi/psi dihedral potentials for residue AIB in the G96 and G11
+                 54A7 and 54B7 mtb files (they had not been updated from 53A(B)6; found by Alpesh Malde)
+PHH, 15.09.2011: Corrected the atom charges for residue DPPC in the G96 and G11 54A7 mtb files
+                 (they had not been updated from 53A6; found by Alpesh Malde). Note that the
+                 DPPC charges in 54B7 are kept the same as in 53B6, i.e. not updated (they differ
+                 between 53A6 and 54A7, and the definition of a scheme for designing new 54B7 charges 
+                 is neither obvious nor really urgent).
+PHH, 09.11.2011: Reintroduced a FORCEFIELD block in all GROMOS11 files.
+PHH, 09.11.2011: Changed atom name H3 by H2 in NH2 patch.
+PHH, 09.11.2011: Introduced a copy of patch D5OH named 5OH, the latter meant for RNA instead of DNA.
+PHH, 22.11.2011: Finalized the #@BLOCKTYPE comments in mtb files listing file name, residue
+                 code (BLK=...), function (SOL,INI,TER,SVT), type (TYPE=APEP,BPEP,DNUC,RNUC,
+                 HEXP,HEXU,MOLE), and full name (NAME=...): intended for later use by make_top.
+PHH, 26.06.2012: Introduced MAKETOPVERSION blocks in all GROMOS11 files
+PHH, 12.07.2012: Removed all LINKEXCLUSIONS and PHYSICALCONSTANTS blocks from GROMOS11 
+                 auxiliary mtb files (now only included in the main mtb file). As a result 
+                 (and also since MTBUILBLSOLVENT is only to be found there), make_top must
+                 always be called with inclusion of the main mtb file (in addition to 
+                 the possible auxiliary ones).
+END
+FORCEFIELD
+54A7
+END
+MAKETOPVERSION
+1.0
+END
+PHYSICALCONSTANTS
+# FPEPSI: 1.0/(4.0*PI*EPS0) (EPS0 is the permittivity of vacuum)
+  0.1389354E+03
+# HBAR: Planck's constant HBAR = H/(2* PI)
+  0.6350780E-01
+# SPDL: Speed of light (in nm/ps)
+  2.9979245800E05
+# BOLTZ: Boltzmann's constant
+  8.31441E-03
+END
+LINKEXCLUSIONS
+#nearest neighbour exclusions when linking
+#NRNE
+    2
+END
+MTBUILDBLSOLUTE
+# building block (residue, nucleotide, etc.)
+# RNME
+GLYC
+# number of atoms, number of preceding exclusions
+# NMAT, NLIN
+   20    0
+# preceding exclusions
+# ATOM           MAE MSAE
+# atoms
+# ATOM  ANM IACM MASS  CGM   ICGM  MAE  MSAE
+ 1     CA   15    4   1.000    1    2   2   3
+ 2     CB   15    4   0.400    0    2   3   4
+ 3     OA    3   16  -0.800    0    4   4   5   6   7
+ 4      P   30   31   1.700    0    4   5   6   7   8
+ 5     OC    2   16  -0.800    0    2   6   7
+ 6     OB    2   16  -0.800    0    1   7
+ 7     OD    3   16  -0.700    1    2   8   9
+ 8     CC   15    4   0.400    0    3   9  10  15
+ 9     CD   14    3   0.300    0    4  10  15  11  16
+ 10    OE    4   16  -0.700    0    4  11  12  13  15
+ 11   C1A   12   12   0.700    0    3  12  13  14
+ 12    OF    1   16  -0.700    1    1  13 
+ 13   C1B   15    4   0.000    1    1  14
+ 14   C1C   15    4   0.000    1    0
+ 15    CE   15    4   0.500    0    2  16  17
+ 16    OG    4   16  -0.700    0    3  17  18  19
+ 17   C2A   12   12   0.800    0    3  18  19  20
+ 18    OH    1   16  -0.600    1    1  19
+ 19   C2B   15    4   0.000    1    1  20
+ 20   C2C   15    4   0.000    1    0
+# bonds
+#  NB
+   19
+#  IB   JB   MCB
+    1   2  27
+    2   3  18
+    3   4  28
+    4   5  24
+    4   6  24
+    4   7  28
+    7   8  18
+    8   9  27
+    9  10  18
+    9  15  27
+   10  11  10
+   11  12   5
+   11  13  23
+   13  14  27
+   15  16  18
+   16  17  10
+   17  18   5
+   17  19  23
+   19  20  27
+# bond angles
+# NBA
+   24
+#  IB   JB   KB   LB   MCB
+    1   2   3  15
+    2   3   4  26
+    3   4   5  14
+    3   4   6  14
+    3   4   7   5
+    4   7   8  26
+    5   4   6  29
+    5   4   7  14
+    6   4   7  14
+    7   8   9  15
+    8   9  10  13
+    8   9  15  13
+    9  10  11  22
+    9  15  16  15
+   10   9  15  13
+   10  11  12  31
+   10  11  13  16
+   11  13  14  15
+   12  11  13  35
+   15  16  17  22
+   16  17  18  31
+   16  17  19  16
+   17  19  20  15
+   18  17  19  35
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   MCB
+    9  10  15   8   2
+   11  10  12  13   1
+   17  16  18  19   1
+# dihedrals
+# NDA
+  14
+#  IB   JB   KB   LB   MCB
+    1   2   3   4  29
+    2   3   4   7  20
+    2   3   4   7  27
+    3   4   7   8  20
+    3   4   7   8  27
+    4   7   8   9  29
+    7   8   9  15  34
+    8   9  10  11  29
+    8   9  15  16  34
+    9  10  11  13  13
+    9  15  16  17  29
+   10  11  12  14  40
+   15  16  17  19  13
+   16  17  19  20  40
+0
+END
