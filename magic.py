@@ -10,7 +10,7 @@ def main(argv):
     #pString = 'GGKT(7IRE)'
     #pString = 'P8EO(B16HMCW5FRFY)'
     #pString = 'P8EO(B16HFRFYFRFY)'
-    pString = 'GLYC(HEAD)'
+    pString = 'GLYM(PCHMHDAMHDAM)'
     # generate the list of unique atom names in the various data directories
     # store in the config.MTB_PDB_ROOT_NAMES data point
     fileNames = []

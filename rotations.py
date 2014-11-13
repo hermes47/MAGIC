@@ -14,7 +14,8 @@ def crossProductMatrix(w):
 ''' Returns the normalised cross product of two vectors. '''
 def normCrossProduct(a, b):
     w = np.cross(a, b)
-    w = w/np.linalg.norm(w)
+    if np.linalg.norm(w) > 0.0:
+        w = w/np.linalg.norm(w)
     return w
 
 ''' Returns the angle between two vectors. If the optional delta argument is supplied,

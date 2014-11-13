@@ -22,6 +22,8 @@ CHARGE_RULES = {"rule1":False,"rule2":True,"rule3":False,"rule4":True,"rule5":Tr
 MOLECULE_PREALIGNMENT = True
 ''' Further alignment style. Choice are: dihedral, sweetspot, none'''
 FURTHER_ALIGNMENT_STYLE = "sweetspot"
+''' Maximum number of further alignment rotation attempts before giving up.'''
+MAX_ALIGNMENT_COUNT = 100
 
 # the list of checked atoms. used for graphSearch. should be extracted in the graph search function
 CHECKED_ATOMS = []

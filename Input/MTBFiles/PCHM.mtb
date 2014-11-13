@@ -62,7 +62,7 @@ END
 MTBUILDBLSOLUTE
 # building block (residue, nucleotide, etc.)
 # RNME
-HEAD
+PCHM
 # number of atoms, number of preceding exclusions
 # NMAT, NLIN
    16    0
@@ -81,11 +81,11 @@ HEAD
     9   OC    2   16  -0.800    0    2  10  11
    10   OB    2   16  -0.800    0    1  11
    11   OD    3   16  -0.700    1    2  12  13
-   12   CC   15    4   0.400    0    2  13  14  
+   12   CC   15    4   0.400    0    2  13  14
    13   CD   14    3   0.300    0    2  14  15
-   14   OE    4   16  -0.700    0    2  15  16 
+   14   OE    4   16  -0.700    0    2  15  16
    15  C1A   12   12   0.700    0    1  16
-   16   OF    1   16  -0.700    1    0 
+   16   OF    1   16  -0.700    1    0
 # bonds
 #  NB
    15

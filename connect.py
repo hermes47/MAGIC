@@ -24,7 +24,7 @@ Outcome:        Connect the MTB's within the < and > such that a ring is formed.
                 except for the first and final elements. The second joining point of BBBB is connected to the first
                 of CCCC, etc; and the second joining point of EEEE is connected to the first of BBBB
 '''
-from config import NAME_LENGTH, LOADED_MOLECULES, MOLECULE_PREALIGNMENT, FURTHER_ALIGNMENT_STYLE
+from config import NAME_LENGTH, LOADED_MOLECULES, MOLECULE_PREALIGNMENT, FURTHER_ALIGNMENT_STYLE, MAX_ALIGNMENT_COUNT
 from molecule import Molecule
 import genmethods, rotations
 import numpy as np
@@ -233,7 +233,7 @@ def simpleJoin(moleculeA, moleculeB, AJoinPos = 0, BJoinPos = 0):
         else:
             rotAxis = rotations.normCrossProduct(vecB, vecA)
             rotAngle = rotations.vectAngle(vecB, vecA)
-        rotMat = rotations.rotationMatrix(rotAxis, rotAngle)    
+        rotMat = rotations.rotationMatrix(rotAxis, rotAngle)  
         if abSwitch:
             molA.rotate(rotMat)
         else:
@@ -265,6 +265,7 @@ def simpleJoin(moleculeA, moleculeB, AJoinPos = 0, BJoinPos = 0):
     if rotNeed and FURTHER_ALIGNMENT_STYLE is not "none":
         print("--YES")
         rotCount = 0
+        failed = 0
         while rotNeed:
             if FURTHER_ALIGNMENT_STYLE == "sweetspot":
                 vecB = jointMol.getAtmWithIndex(atmA).getXYZ(vec=True)
@@ -282,8 +283,14 @@ def simpleJoin(moleculeA, moleculeB, AJoinPos = 0, BJoinPos = 0):
                 rotCount += 1
                 # get the dihedral to rotate about
                 print(genmethods.atomConnectivity(atmB, tempMol, kind="dihedrals"))
+            if rotCount >= MAX_ALIGNMENT_COUNT:
+                failed += 1
+                break
             rotNeed, atmA, atmB, delta = genmethods.rotateNeeded(jointMol, tempMol)
-        print("---%d rotations were performed to obtain non-overlapping structures" % rotCount)
+        if not failed:
+            print("---%d rotations were performed to obtain non-overlapping structures" % rotCount)
+        elif failed:
+            print("---%d rotations were insufficient to obtain non-overlapping structures" % MAX_ALIGNMENT_COUNT)
     else:
         print("--NO")
         
@@ -291,17 +298,25 @@ def simpleJoin(moleculeA, moleculeB, AJoinPos = 0, BJoinPos = 0):
     print("-Copying tempMol into jointMol to give the joint molecule")
     jointMol = genmethods.copyData(tempMol, jointMol)
     # balance out the charges
-    totalCharge = 0.
+    targetCharge = 0.
     for a in molA.getAtms():
-        totalCharge += a.getCharge()
+        targetCharge += a.getCharge()
     for a in molB.getAtms():
-        totalCharge += a.getCharge()
+        targetCharge += a.getCharge()
     # round to 3 dp to account for inaccurate storing of floats
-    totalCharge = round(totalCharge, 3)
-    print("-Balancing the charges to obtain a target charge of %1.1f" % totalCharge)
-    #genmethods.sensibleCharges(jointMol, totalCharge)
-    #genmethods.balanceCharge(jointMol, totalCharge)
-    genmethods.leastSquaresCharges(jointMol, totalCharge)
+    targetCharge = round(targetCharge, 8)
+    totalCharge = 0.
+    for a in jointMol.getAtms():
+        totalCharge += a.getCharge()
+    totalCharge = round(totalCharge, 8)
+    excessCharge = totalCharge - targetCharge
+    print("excess charge: ",excessCharge)
+    if not (-1e-10 < excessCharge < 1e-10):
+        print("-Balancing the charges to obtain a target charge of %1.1f" % targetCharge)
+        #genmethods.sensibleCharges(jointMol, targetCharge)
+        #genmethods.balanceCharge(jointMol, targetCharge)
+        genmethods.leastSquaresCharges(jointMol, targetCharge)
+    else: print("-No charge balancing required")
     jointMol.setCompndName(jointName)
     for a in jointMol.getAtms():
         a.setResName(jointName)

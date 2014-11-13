@@ -166,13 +166,11 @@ def parseMTB(rootName, mol, hasPDB=True):
                     # everything is now ints, so make it so
                     bondData = tuple(map(int, bondData))
                     bondCode = str(bondData[0]-1)+","+str(bondData[1]-1) # bondIDs stored based on Index
-                    if bondCode[1] < bondCode[0]: str(bondData[1]-1)+","+str(bondData[0]-1) # shouldn't ever happen
+                    if bondData[1] < bondData[0]: bondCode = str(bondData[1])+","+str(bondData[0]) # shouldn't ever happen
                     # as bonds are added to the end of the bond list, the index of the bondID will be 
                     # the same as the index of the bond it relates to
-                    if bondCode not in mol.getBondIDs():
-                        print("Bond not able to be found as existing. Will attempt to create a new one, at some point in the future code possibly.")
-                    else:
-                        mol.getBond(mol.getBondIDs().index(bondCode)).setBondTypeCode(bondData[2])
+                    if bondCode not in mol.getBondIDs(): mol.addBond((min(bondData[0],bondData[1]),max(bondData[0],bondData[1]),0))
+                    mol.getBond(mol.getBondIDs().index(bondCode)).setBondTypeCode(bondData[2])
                     counts["bonds"] += 1
                 # next line gives the number of angles
                 elif counts["locating"] == 3:
