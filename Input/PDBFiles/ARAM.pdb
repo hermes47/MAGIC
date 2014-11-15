@@ -1,0 +1,47 @@
+COMPND    ARAM
+ATOM      1 C21  ARAM    0       1.238  -4.184   2.858  1.00  0.00           C  
+ATOM      2 O2   ARAM    0       2.056  -3.426   1.927  1.00  0.00           O  
+ATOM      3 C20  ARAM    0       3.256  -2.963   2.311  1.00  0.00           C  
+ATOM      4 O1   ARAM    0       3.656  -3.176   3.431  1.00  0.00           O  
+ATOM      5 C19  ARAM    0       4.104  -2.177   1.345  1.00  0.00           C  
+ATOM      6 C18  ARAM    0       3.213  -1.233   0.536  1.00  0.00           C  
+ATOM      7 C17  ARAM    0       4.074  -0.434  -0.445  1.00  0.00           C  
+ATOM      8 C16  ARAM    0       3.183   0.511  -1.253  1.00  0.00           C  
+ATOM      9 C15  ARAM    0       4.044   1.309  -2.235  1.00  0.00           C  
+ATOM     10 C14  ARAM    0       3.153   2.254  -3.043  1.00  0.00           C  
+ATOM     11 C13  ARAM    0       4.015   3.052  -4.024  1.00  0.00           C  
+ATOM     12 C12  ARAM    0       3.123   3.997  -4.833  1.00  0.00           C  
+ATOM     13 C11  ARAM    0       3.985   4.796  -5.814  1.00  0.00           C  
+ATOM     14 C10  ARAM    0       3.094   5.740  -6.622  1.00  0.00           C  
+ATOM     15 C9   ARAM    0       3.955   6.538  -7.603  1.00  0.00           C  
+ATOM     16 C8   ARAM    0       3.064   7.484  -8.412  1.00  0.00           C  
+ATOM     17 C7   ARAM    0       3.924   8.282  -9.393  1.00  0.00           C  
+ATOM     18 C6   ARAM    0       3.033   9.226 -10.201  1.00  0.00           C  
+ATOM     19 C5   ARAM    0       3.894  10.025 -11.183  1.00  0.00           C  
+ATOM     20 C4   ARAM    0       3.003  10.970 -11.991  1.00  0.00           C  
+ATOM     21 C3   ARAM    0       3.864  11.768 -12.972  1.00  0.00           C  
+ATOM     22 C2   ARAM    0       2.973  12.713 -13.781  1.00  0.00           C  
+ATOM     23 C1   ARAM    0       3.834  13.512 -14.762  1.00  0.00           C  
+CONECT    1    2
+CONECT    2    3
+CONECT    3    4
+CONECT    3    5
+CONECT    5    6
+CONECT    6    7
+CONECT    7    8
+CONECT    8    9
+CONECT    9   10
+CONECT   10   11
+CONECT   11   12
+CONECT   12   13
+CONECT   13   14
+CONECT   14   15
+CONECT   15   16
+CONECT   16   17
+CONECT   17   18
+CONECT   18   19
+CONECT   19   20
+CONECT   20   21
+CONECT   21   22
+CONECT   22   23
+END

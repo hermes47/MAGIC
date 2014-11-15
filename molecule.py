@@ -146,6 +146,8 @@ class Molecule(object):
         if sName.startswith("COMPND"):
             self.compndName = sName[10:]
         else: self.compndName = sName
+        if self.getNumAtms() > 0:
+            for atm in self.getAtms(): atm.setResName(self.compndName)
     def setTitle(self, sTitle):
         if sTitle.startswith("TITLE"):
             self.title = sTitle[10:]

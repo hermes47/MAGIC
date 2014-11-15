@@ -59,33 +59,49 @@ def shiftIndicesNotAtm(molecule, changeMatrix):
     
     
 # load up the Molecule
-mol = Molecule()
-rootName = "STEM"
-genmethods.parsePDB(rootName, mol)
-genmethods.parseMTB(rootName, mol)
+#mol = Molecule()
+#rootName = "BEHM"
+#genmethods.parsePDB(rootName, mol)
+#genmethods.parseMTB(rootName, mol)
 #shiftMatrix = {1:-1, 2:-2, 3:-3, 13:4, 10:5, 11:6, 12:7, 4:8, 6:9, 5:10, 7:11, 9:12, 8:13, 14:14, 15:15, 16:16, 17:17, 26:18, 23:19, 22:20, 21:21, 24:22, 25:23, 19:24, 18:25, 27:26, 28:27, 20:28, 29:29, 30:30}
-shiftMatrix2 = {1:-1, 2:-1, 3:-1, 4:-1, 5:-1, 6:-1, 7:-1, 8:-1, 9:-1, 10:-1,
-                11:-1, 12:1, 13:2, 14:3, 15:4, 16:5, 17:6, 18:7, 19:8, 20:9,
-                21:10, 22:11, 23:12, 24:13, 25:14, 26:15, 27:16, 28:17, 29:18, 30:19,
-                31:20, 32:21, 33:22, 34:-1, 35:-1, 36:-1, 37:-1, 38:-1, 39:-1, 40:-1,
-                41:-1, 42:-1, 43:-1, 44:-1, 45:-1, 46:-1, 47:-1, 48:-1, 49:-1, 50:-1,
-                51:-1, 52:-1}
-shiftIndicesNotAtm(mol, shiftMatrix2)
-mol.setCompndName(rootName)
-#copyMol = copy.deepcopy(mol)
-#copyMol.atms = []
-#for i in range(len(mol.getAtms())):
-#    copyMol.addAtm(mol.getAtms()[shiftMatrix[i+1]-1],True)
-#    copyMol.getAtms()[i].setAtmIndex(i)
-#    copyMol.getAtms()[i].setResName(rootName)
-#genmethods.exclusionsCheck(copyMol)
-os.chdir(ROOT_DIRECTORY)
-output = rootName
-#os.system('mkdir OutputFiles/'+output)
-# print out final file to PDB and MTB files
-with open("OutputFiles/"+output+"/"+output+".pdb", "w") as fh:
-    fh.write(mol.printPDB())
-with open("OutputFiles/"+output+"/"+output+".mtb", "w") as fh:
-    fh.write(mol.printMTB())
+shiftMatrix2 = {}
+names = {23:"TCSM",24:"LIGM",25:"PCSM",26:"CERM",27:"HEPM",28:"MONM",
+         29:"NCSM",30:"MELM",31:"HTCM",32:"LACM",33:"PSYM",34:"GEDM",35:"CRPM",36:"HTYM"}
+for i in [23,24,25,26,27,28,29,30,31,32,33,34,35,36]:
+    mol = Molecule()
+    rootName = "HTYM"
+    genmethods.parsePDB(rootName, mol)
+    genmethods.parseMTB(rootName, mol)
+    for j in range(1,i+6):
+        shiftMatrix2[j] = j
+    for k in range(1,100):
+        if k not in shiftMatrix2: shiftMatrix2[k] = -1
+    print(shiftMatrix2)
+    shiftIndicesNotAtm(mol, shiftMatrix2)
+    mol.setCompndName(names[i])
+    mol.getAtmWithIndex(mol.getNumAtms()-1).setIACM(16)
+    mol.getAtmWithIndex(mol.getNumAtms()-1).setMassNum(5)
+    #copyMol = copy.deepcopy(mol)
+    #copyMol.atms = []
+    #for i in range(len(mol.getAtms())):
+    #    copyMol.addAtm(mol.getAtms()[shiftMatrix[i+1]-1],True)
+    #    copyMol.getAtms()[i].setAtmIndex(i)
+    #    copyMol.getAtms()[i].setResName(rootName)
+    #genmethods.exclusionsCheck(copyMol)
+    os.chdir(ROOT_DIRECTORY)
+    output = names[i]
+    try:
+        os.system('mkdir OutputFiles/'+output)
+    except:
+        pass
+    # print out final file to PDB and MTB files
+    with open("OutputFiles/"+output+"/"+output+".pdb", "w") as fh:
+        fh.write(mol.printPDB())
+    with open("OutputFiles/"+output+"/"+output+".mtb", "w") as fh:
+        fh.write(mol.printMTB())
+    with open("OutputFiles/"+output+"/"+output+".ovl", "w") as fh:
+        fh.write("4\n4,6\n")
+        fh.write(str(i-2)+" "+" ".join(str(x) for x in range(7,6+i)))
+        fh.write("\n1 6\n2 4 5\n2 3 2\n1 1")
+        
     
-

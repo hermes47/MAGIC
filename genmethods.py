@@ -688,7 +688,7 @@ def runGROMOS(fileName, inputString):
     os.system("sed -i 's/NUMOFATOMS/%d/' energymin.imd" % LOADED_MOLECULES[fileName].getNumAtms())
     os.system("sed -i 's/MOLECULESHORTCODE/%s/' energymin.imd" % inputString)
     # run the energy minimisation
-    print("-Running the energy minimisation for a maximum of 25000 steps")
+    print("-Running the energy minimisation for a maximum of 2500 steps")
     os.system('/usr/md++-1.2.3/bin/md @topo %s.top @conf %s.cnf @fin %s_min.cnf @input energymin.imd > energymin.omd' %(fileName, fileName, fileName))
     # frameout the minimised structure into PDB and mv it into the outputfiles
     os.system('frameout @topo %s.top @pbc v @outformat pdb @notimeblock @traj %s_min.cnf > /dev/null' %(fileName, fileName))
