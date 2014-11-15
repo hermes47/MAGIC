@@ -64,23 +64,22 @@ def shiftIndicesNotAtm(molecule, changeMatrix):
 #genmethods.parsePDB(rootName, mol)
 #genmethods.parseMTB(rootName, mol)
 #shiftMatrix = {1:-1, 2:-2, 3:-3, 13:4, 10:5, 11:6, 12:7, 4:8, 6:9, 5:10, 7:11, 9:12, 8:13, 14:14, 15:15, 16:16, 17:17, 26:18, 23:19, 22:20, 21:21, 24:22, 25:23, 19:24, 18:25, 27:26, 28:27, 20:28, 29:29, 30:30}
-shiftMatrix2 = {}
-names = {23:"TCSM",24:"LIGM",25:"PCSM",26:"CERM",27:"HEPM",28:"MONM",
-         29:"NCSM",30:"MELM",31:"HTCM",32:"LACM",33:"PSYM",34:"GEDM",35:"CRPM",36:"HTYM"}
-for i in [23,24,25,26,27,28,29,30,31,32,33,34,35,36]:
+shiftMatrix2 = {11:1,12:2,13:3,14:4,15:5,16:6,17:7}
+names = ["CIST"]
+for i in names:
     mol = Molecule()
-    rootName = "HTYM"
+    rootName = "OLEM"
     genmethods.parsePDB(rootName, mol)
     genmethods.parseMTB(rootName, mol)
-    for j in range(1,i+6):
-        shiftMatrix2[j] = j
+    #for j in range(1,i+6):
+    #    shiftMatrix2[j] = j
     for k in range(1,100):
         if k not in shiftMatrix2: shiftMatrix2[k] = -1
     print(shiftMatrix2)
     shiftIndicesNotAtm(mol, shiftMatrix2)
-    mol.setCompndName(names[i])
-    mol.getAtmWithIndex(mol.getNumAtms()-1).setIACM(16)
-    mol.getAtmWithIndex(mol.getNumAtms()-1).setMassNum(5)
+    mol.setCompndName(i)
+    mol.getAtmWithIndex(0).setIACM(16)
+    mol.getAtmWithIndex(0).setMassNum(5)
     #copyMol = copy.deepcopy(mol)
     #copyMol.atms = []
     #for i in range(len(mol.getAtms())):
@@ -89,7 +88,7 @@ for i in [23,24,25,26,27,28,29,30,31,32,33,34,35,36]:
     #    copyMol.getAtms()[i].setResName(rootName)
     #genmethods.exclusionsCheck(copyMol)
     os.chdir(ROOT_DIRECTORY)
-    output = names[i]
+    output = i
     try:
         os.system('mkdir OutputFiles/'+output)
     except:
@@ -100,8 +99,8 @@ for i in [23,24,25,26,27,28,29,30,31,32,33,34,35,36]:
     with open("OutputFiles/"+output+"/"+output+".mtb", "w") as fh:
         fh.write(mol.printMTB())
     with open("OutputFiles/"+output+"/"+output+".ovl", "w") as fh:
-        fh.write("4\n4,6\n")
-        fh.write(str(i-2)+" "+" ".join(str(x) for x in range(7,6+i)))
-        fh.write("\n1 6\n2 4 5\n2 3 2\n1 1")
+        fh.write("4\n4,5\n")
+        fh.write("4 1 2 3 4")
+        fh.write("\n0\n0\n0\n3 5 6 7")
         
     
