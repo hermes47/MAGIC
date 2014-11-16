@@ -7,7 +7,7 @@ RANDOM_NAME_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 NAME_LENGTH = 4
 ''' Number of Tiers used for joining.
 Caution is advised when altering this constant as OVL files will need to be updated and, 
-more importantly, the use of the default 5 is fairly hard coded into MAGIC. '''
+more importantly, the use of the default 5 is fairly hard coded into MAGIC currently. '''
 NUM_TIERS = 5
 ''' Root directory '''
 ROOT_DIRECTORY = os.getcwd()
@@ -20,10 +20,12 @@ ATOMIC_RADII = {"H":0.53,"C":0.67,"N":0.56,"O":0.48,"P":0.98,"F":0.42,"S":0.88,"
 CHARGE_RULES = {"rule1":False,"rule2":True,"rule3":False,"rule4":True,"rule5":True,"rule6":True,"rule7":True}
 ''' Prealign molecules'''
 MOLECULE_PREALIGNMENT = True
-''' Further alignment style. Choice are: dihedral, sweetspot'''
+''' Further alignment style. Choice are: dihedral, sweetspot, none'''
 FURTHER_ALIGNMENT_STYLE = "sweetspot"
+''' Maximum number of further alignment rotation attempts before giving up.'''
+MAX_ALIGNMENT_COUNT = 100
 
-# the list of checked atoms. used for graphSearch
+# the list of checked atoms. used for graphSearch. should be extracted in the graph search function
 CHECKED_ATOMS = []
 
 # the molecules that have been loaded into memory

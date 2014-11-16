@@ -11,8 +11,8 @@ Documentation/MAGIC_doc.log
 
 Documentation/MAGIC_doc.aux
 
-EnergyData/RawData/*
+OutputFiles/*
 
 PickledFiles/*
 
-OutputFiles/*
+EnergyData/RawData/*

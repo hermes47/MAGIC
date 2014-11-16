@@ -6,8 +6,11 @@ from config import ROOT_DIRECTORY, MTB_PDB_ROOT_NAMES, NAME_LENGTH, RANDOM_NAME_
 
 def main(argv):
     ifpfile = '54A7.ifp'
-    pString = 'P8EO(B16HMCW5MCW5)'
+    #pString = 'P8EO(B16HMCW5MCW5)'
     #pString = 'GGKT(7IRE)'
+    #pString = 'P8EO(B16HMCW5FRFY)'
+    #pString = 'P8EO(B16HFRFYFRFY)'
+    pString = 'GLYM(PCHMMONMOLEM)'
     # generate the list of unique atom names in the various data directories
     # store in the config.MTB_PDB_ROOT_NAMES data point
     fileNames = []
