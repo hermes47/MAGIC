@@ -1,4 +1,4 @@
-import random
+import random, graphs
 import io
 import sys
 import numpy
@@ -24,6 +24,7 @@ class Molecule(object):
         self.numJoiningPoints = 0
         self.joiningPoints = [] # stored as index of atom
         self.transverseBonds = [] # stored as index of bond
+        self.graphRep = graphs.GraphRep()
     ''' Method so that the Molecule can be printed vaguely nicely '''
     def __repr__(self, *args, **kwargs):
         dataString = (self.getCompndName(),
@@ -167,6 +168,7 @@ class Molecule(object):
         if not copyAtm:
             at = Atom(atmData)
             self.atms.append(at)
+            self.graphRep.addVertex(at)
         elif copyAtm:
             self.atms.append(atmData)
     def addBond(self, bondData, copyBond=False):
@@ -359,6 +361,13 @@ class Molecule(object):
         for a in self.getAtms():
             print("%s    %6.3f %6.3f %6.3f " %(a.getAtmName()[0], a.getX(), a.getY(), a.getZ()), file=f)
         return f.getvalue()
+    def genGraphRep(self):
+        for atm in self.getAtms():
+            self.graphRep.addVertex(atm.getAtmIndex())
+        for bond in self.getBonds():
+            self.graphRep.addEdge(bond.getAtmAIndex(),bond.getAtmBIndex())
+    def find_path(self, start, end):
+        return self.graphRep.find_path(self.graphRep.getVertices(), start, end)
 
 ''' Atom class.
 Description:
