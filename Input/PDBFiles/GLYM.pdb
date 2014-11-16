@@ -1,0 +1,37 @@
+COMPND    GLYM
+ATOM      1 CA   GLYM    1       4.391  27.058  -2.219  1.00  0.00           C  
+ATOM      2 CB   GLYM    1       4.631  28.268  -1.309  1.00  0.00           C  
+ATOM      3 OA   GLYM    1       3.411  29.018  -1.219  1.00  0.00           O  
+ATOM      4 P    GLYM    1       3.411  29.608   0.281  1.00  0.00           P  
+ATOM      5 OC   GLYM    1       2.201  30.468   0.351  1.00  0.00           O  
+ATOM      6 OB   GLYM    1       4.731  29.948   0.861  1.00  0.00           O  
+ATOM      7 OD   GLYM    1       2.811  28.318   1.031  1.00  0.00           O  
+ATOM      8 CC   GLYM    1       2.451  28.698   2.361  1.00  0.00           C  
+ATOM      9 CD   GLYM    1       1.571  27.668   3.061  1.00  0.00           C  
+ATOM     10 OE   GLYM    1       0.851  28.188   4.181  1.00  0.00           O  
+ATOM     11 C1A  GLYM    1      -0.469  28.058   4.281  1.00  0.00           C  
+ATOM     12 OF   GLYM    1      -1.149  27.598   3.361  1.00  0.00           O  
+ATOM     13 C1B  GLYM    1      -0.979  28.648   5.531  1.00  0.00           C  
+ATOM     14 CE   GLYM    1       2.381  26.378   3.211  1.00  0.00           C  
+ATOM     15 OG   GLYM    1       3.471  26.578   4.121  1.00  0.00           O  
+ATOM     16 C2A  GLYM    1       4.281  25.528   4.221  1.00  0.00           C  
+ATOM     17 OH   GLYM    1       4.211  24.498   3.541  1.00  0.00           O  
+ATOM     18 C2B  GLYM    1       5.291  25.568   5.301  1.00  0.00           C  
+CONECT    1    2
+CONECT    2    3
+CONECT    3    4
+CONECT    4    5
+CONECT    4    6
+CONECT    4    7
+CONECT    7    8
+CONECT    8    9
+CONECT    9   10
+CONECT    9   14
+CONECT   10   11
+CONECT   11   12
+CONECT   11   13
+CONECT   14   15
+CONECT   15   16
+CONECT   16   17
+CONECT   16   18
+END

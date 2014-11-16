@@ -39,16 +39,15 @@ def fragmentString(s, length=NAME_LENGTH):
     return l
 
 ''' Load a given file type with the given rootName '''
-def loadFile(rootName, folder, fileExtension, removeComments=True):
+def loadFile(rootName, folder, fileExtension, removeComments='#'):
     with open(folder+rootName+fileExtension) as fh:
         file = fh.readlines()
+    shortFile = []
     if removeComments:
-        shortFile = []
         for line in file:
-            if not line.startswith("#"): # ignore all the full line comments immediately
+            if not line.startswith(removeComments): # ignore all the full line comments immediately
                 shortFile.append(line[:-1]) # and get rid of the trailing new line, just cos
-        return shortFile
-    else: return file
+    return shortFile
 
 ''' Method for parsing an IFP file. '''
 def parseIFP(rootName, folder):
@@ -61,7 +60,7 @@ Returns the molecule. '''
 def parsePDB(rootName, mol, hasMTB=False, passedData=None):
     # load the PDB file into memory
     if not passedData:
-        pdbData = loadFile(rootName, "Input/PDBFiles/", ".pdb", False)
+        pdbData = loadFile(rootName, "Input/PDBFiles/", ".pdb")
     else: pdbData = passedData
     if not hasMTB:
         # read the PDB file line by line
@@ -167,13 +166,11 @@ def parseMTB(rootName, mol, hasPDB=True):
                     # everything is now ints, so make it so
                     bondData = tuple(map(int, bondData))
                     bondCode = str(bondData[0]-1)+","+str(bondData[1]-1) # bondIDs stored based on Index
-                    if bondCode[1] < bondCode[0]: str(bondData[1]-1)+","+str(bondData[0]-1) # shouldn't ever happen
+                    if bondData[1] < bondData[0]: bondCode = str(bondData[1])+","+str(bondData[0]) # shouldn't ever happen
                     # as bonds are added to the end of the bond list, the index of the bondID will be 
                     # the same as the index of the bond it relates to
-                    if bondCode not in mol.getBondIDs():
-                        print("Bond not able to be found as existing. Will attempt to create a new one, at some point in the future code possibly.")
-                    else:
-                        mol.getBond(mol.getBondIDs().index(bondCode)).setBondTypeCode(bondData[2])
+                    if bondCode not in mol.getBondIDs(): mol.addBond((min(bondData[0],bondData[1]),max(bondData[0],bondData[1]),0))
+                    mol.getBond(mol.getBondIDs().index(bondCode)).setBondTypeCode(bondData[2])
                     counts["bonds"] += 1
                 # next line gives the number of angles
                 elif counts["locating"] == 3:
@@ -691,8 +688,8 @@ def runGROMOS(fileName, inputString):
     os.system("sed -i 's/NUMOFATOMS/%d/' energymin.imd" % LOADED_MOLECULES[fileName].getNumAtms())
     os.system("sed -i 's/MOLECULESHORTCODE/%s/' energymin.imd" % inputString)
     # run the energy minimisation
-    print("-Running the energy minimisation for a maximum of 25000 steps")
-    os.system('md @topo %s.top @conf %s.cnf @fin %s_min.cnf @input energymin.imd > energymin.omd' %(fileName, fileName, fileName))
+    print("-Running the energy minimisation for a maximum of 2500 steps")
+    os.system('/usr/md++-1.2.3/bin/md @topo %s.top @conf %s.cnf @fin %s_min.cnf @input energymin.imd > energymin.omd' %(fileName, fileName, fileName))
     # frameout the minimised structure into PDB and mv it into the outputfiles
     os.system('frameout @topo %s.top @pbc v @outformat pdb @notimeblock @traj %s_min.cnf > /dev/null' %(fileName, fileName))
     print("-Saving the minimised structure as %s_minimised.pdb" % fileName)
@@ -788,28 +785,24 @@ def isJoinable(questionString):
             return False
     return True
 
-''' Method to determine if rotation is needed for two gien parital molecules.
+''' Method to determine if rotation is needed for two given molecules.
 Rotation is needed if there is overlap between the two.'''
 def rotateNeeded(molA, molB):
-    # check to see if there is any overlap between the atomic radii of each atom
     for atmOne in molA.getAtms():
         for atmTwo in molB.getAtms():
-            # get the atom types
             atmOneType = atmOne.getAtmType()
             atmTwoType = atmTwo.getAtmType()
-            # determine the min length between the two atom types
             minLength = 0.
             for atm in (atmOneType,atmTwoType):
                 if atm not in ATOMIC_RADII:
                     minLength += 1.0
                 else:
                     minLength += ATOMIC_RADII[atm]
-            # determine the actual length between the two
             actualLength = numpy.linalg.norm(atmOne.getXYZ(vec=True)-atmTwo.getXYZ(vec=True))
-            # return True if actualLength < minLength
             if actualLength < minLength:
-                return True, atmOne.getAtmIndex(), atmTwo.getAtmIndex(), minLength, actualLength
-    return False, 0, 0
+                return True, atmOne.getAtmIndex(), atmTwo.getAtmIndex(), minLength - actualLength
+            else:
+                return False, 0, 0, 0
 
 ''' Method to return all the connectivity involving a given atmID, with that atmID in a terminal position.
 Returns all bonds, angles and dihedrals (regardless of if they're assigned in the force field or not) by

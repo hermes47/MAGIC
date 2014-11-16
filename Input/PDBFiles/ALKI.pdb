@@ -1,0 +1,15 @@
+COMPND    ALKI
+ATOM      1 C1B  ALKI    1      66.454  24.055  13.440  1.00  0.00           C  
+ATOM      2 C1C  ALKI    1      65.660  23.464  14.597  1.00  0.00           C  
+ATOM      3 C1D  ALKI    1      64.635  24.333  15.341  1.00  0.00           C  
+ATOM      4 C1E  ALKI    1      64.045  23.516  16.485  1.00  0.00           C  
+ATOM      5 C1F  ALKI    1      62.983  24.222  17.336  1.00  0.00           C  
+ATOM      6 C1G  ALKI    1      62.257  23.291  18.317  1.00  0.00           C  
+ATOM      7 C1H  ALKI    1      61.282  24.120  19.153  1.00  0.00           C  
+CONECT    1    2
+CONECT    2    3
+CONECT    3    4
+CONECT    4    5
+CONECT    5    6
+CONECT    6    7
+END

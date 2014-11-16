@@ -41,15 +41,30 @@ class Molecule(object):
     def getAuthors(self):
         return self.authors
     def getNumAtms(self):
-        return len(self.atms)
+        num = 0
+        for a in self.atms:
+            if a.getAtmPos() > 0: num += 1
+        return num
     def getNumBonds(self):
-        return len(self.bonds)
+        num = 0
+        for b in self.bonds:
+            if b.getAtmAPos() > 0 and b.getAtmBPos() > 0: num +=1
+        return num
     def getNumAngles(self):
-        return len(self.angles)
+        num = 0
+        for b in self.angles:
+            if b.getAtmAPos() > 0 and b.getAtmBPos() > 0 and b.getAtmCPos() > 0: num +=1
+        return num
     def getNumImpropers(self):
-        return len(self.impropers)
+        num = 0
+        for b in self.impropers:
+            if b.getAtmAPos() > 0 and b.getAtmBPos() > 0 and b.getAtmCPos() > 0 and b.getAtmDPos() > 0: num +=1
+        return num
     def getNumDihedrals(self):
-        return len(self.dihedrals)
+        num = 0
+        for b in self.dihedrals:
+            if b.getAtmAPos() > 0 and b.getAtmBPos() > 0 and b.getAtmCPos() > 0 and b.getAtmDPos() > 0: num +=1
+        return num
     def getAtm_Index(self, aIndex):
         return self.atms[aIndex]
     def getAtm_Pos(self, aPos):
@@ -131,6 +146,8 @@ class Molecule(object):
         if sName.startswith("COMPND"):
             self.compndName = sName[10:]
         else: self.compndName = sName
+        if self.getNumAtms() > 0:
+            for atm in self.getAtms(): atm.setResName(self.compndName)
     def setTitle(self, sTitle):
         if sTitle.startswith("TITLE"):
             self.title = sTitle[10:]
@@ -278,13 +295,15 @@ class Molecule(object):
         f = io.StringIO()
         print(self.getPDBStart(), file=f)
         for atom in self.getAtms():
-            print(atom.getPDBString(), file=f)
+            if atom.getAtmPos() > 0:
+                print(atom.getPDBString(), file=f)
         for bond in self.getBonds():
             if bond.getAtmAIndex() > bond.getAtmBIndex():
                 temp = bond.getAtmBIndex()
                 bond.setAtmBIndex(bond.getAtmAIndex())
                 bond.setAtmAIndex(temp)
-            print(bond.getPDBString(), file=f)
+            if bond.getAtmAPos() > 0 and bond.getAtmBPos() > 0:
+                print(bond.getPDBString(), file=f)
         #for i in range(1,self.getNumAtms()+1):
         #    bondedAtoms = []
         #    for bond in self.getBonds():
@@ -309,23 +328,28 @@ class Molecule(object):
         print("%5d %5d" %(self.getNumAtms(), 0), file=f)
         for a in self.getAtms():
             atomString = "%5d %5s %5d %5d %10.6f %5d %4d " + " ".join( str(b) for b in a.getNonBondExcludeAtms())
-            print(atomString %(a.getAtmPos(),a.getAtmName(),a.getIACM(),a.getMassNum(),a.getCharge(),a.getChargeGroupCode(),len(a.getNonBondExcludeAtms())), file=f)
+            if a.getAtmPos() > 0:
+                print(atomString %(a.getAtmPos(),a.getAtmName(),a.getIACM(),a.getMassNum(),a.getCharge(),a.getChargeGroupCode(),len(a.getNonBondExcludeAtms())), file=f)
         print("# bonds", file=f)
         print("%5d" % self.getNumBonds(), file=f)
         for b in self.getBonds():
-            print("%5d %5d %5d" %(b.getAtmAPos(), b.getAtmBPos(), b.getBondTypeCode()), file=f)
+            if b.getAtmAPos() > 0 and b.getAtmBPos() > 0:
+                print("%5d %5d %5d" %(b.getAtmAPos(), b.getAtmBPos(), b.getBondTypeCode()), file=f)
         print("# angles", file=f)
         print("%5d" % self.getNumAngles(), file=f)
         for a in self.getAngles():
-            print("%5d %5d %5d %5d" %(a.getAtmAPos(), a.getAtmBPos(), a.getAtmCPos(), a.getAngleTypeCode()), file=f)
+            if a.getAtmAPos() > 0 and a.getAtmBPos() > 0 and a.getAtmCPos() > 0:
+                print("%5d %5d %5d %5d" %(a.getAtmAPos(), a.getAtmBPos(), a.getAtmCPos(), a.getAngleTypeCode()), file=f)
         print("# impropers", file=f)
         print("%5d" % self.getNumImpropers(), file=f)
         for a in self.getImpropers():
-            print("%5d %5d %5d %5d %5d" %(a.getAtmAPos(), a.getAtmBPos(), a.getAtmCPos(), a.getAtmDPos(), a.getImpTypeCode()), file=f)
+            if a.getAtmAPos() > 0 and a.getAtmBPos() > 0 and a.getAtmCPos() > 0 and a.getAtmDPos() > 0:
+                print("%5d %5d %5d %5d %5d" %(a.getAtmAPos(), a.getAtmBPos(), a.getAtmCPos(), a.getAtmDPos(), a.getImpTypeCode()), file=f)
         print("# dihedrals", file=f)
         print("%5d" % self.getNumDihedrals(), file=f)
         for a in self.getDihedrals():
-            print("%5d %5d %5d %5d %5d" %(a.getAtmAPos(), a.getAtmBPos(), a.getAtmCPos(), a.getAtmDPos(), a.getDihedTypeCode()), file=f)
+            if a.getAtmAPos() > 0 and a.getAtmBPos() > 0 and a.getAtmCPos() > 0 and a.getAtmDPos() > 0:
+                print("%5d %5d %5d %5d %5d" %(a.getAtmAPos(), a.getAtmBPos(), a.getAtmCPos(), a.getAtmDPos(), a.getDihedTypeCode()), file=f)
         print("# LJ Exceptions", file=f)
         print(0, file=f)
         print("END", file=f)
@@ -502,7 +526,10 @@ class Atom(object):
                                                                                self.getCrys1(),
                                                                                self.getCrys2(), 
                                                                                self.getAtmType())
-        return formattedString
+        if self.getAtmPos() > 0:
+            return formattedString
+        else:
+            return
         
 ''' Bond class.
 '''

@@ -1,0 +1,45 @@
+COMPND    STEM
+ATOM      1 C19  STEM    0       0.145  -4.248   1.190  1.00  0.00           C  
+ATOM      2 C18  STEM    0      -0.117  -5.645   0.622  1.00  0.00           C  
+ATOM      3 O7   STEM    0      -1.422  -6.108   1.060  1.00  0.00           O  
+ATOM      4 C25  STEM    0      -2.511  -5.848   0.320  1.00  0.00           C  
+ATOM      5 O8   STEM    0      -2.405  -5.227  -0.712  1.00  0.00           O  
+ATOM      6 C26  STEM    0      -3.864  -6.329   0.774  1.00  0.00           C  
+ATOM      7 C27  STEM    0      -3.986  -6.150   2.290  1.00  0.00           C  
+ATOM      8 C28  STEM    0      -5.361  -6.639   2.751  1.00  0.00           C  
+ATOM      9 C29  STEM    0      -5.483  -6.460   4.265  1.00  0.00           C  
+ATOM     10 C30  STEM    0      -6.857  -6.949   4.727  1.00  0.00           C  
+ATOM     11 C31  STEM    0      -6.979  -6.770   6.242  1.00  0.00           C  
+ATOM     12 C32  STEM    0      -8.354  -7.259   6.704  1.00  0.00           C  
+ATOM     13 C33  STEM    0      -8.476  -7.080   8.219  1.00  0.00           C  
+ATOM     14 C34  STEM    0      -9.850  -7.569   8.680  1.00  0.00           C  
+ATOM     15 C35  STEM    0      -9.972  -7.390  10.195  1.00  0.00           C  
+ATOM     16 C36  STEM    0     -11.347  -7.879  10.657  1.00  0.00           C  
+ATOM     17 C37  STEM    0     -11.469  -7.700  12.172  1.00  0.00           C  
+ATOM     18 C38  STEM    0     -12.843  -8.189  12.633  1.00  0.00           C  
+ATOM     19 C39  STEM    0     -12.965  -8.011  14.148  1.00  0.00           C  
+ATOM     20 C40  STEM    0     -14.340  -8.499  14.609  1.00  0.00           C  
+ATOM     21 C41  STEM    0     -14.463  -8.321  16.125  1.00  0.00           C  
+ATOM     22 C42  STEM    0     -15.836  -8.809  16.586  1.00  0.00           C  
+CONECT    1    2
+CONECT    2    3
+CONECT    3    4
+CONECT    4    5
+CONECT    4    6
+CONECT    6    7
+CONECT    7    8
+CONECT    8    9
+CONECT    9   10
+CONECT   10   11
+CONECT   11   12
+CONECT   12   13
+CONECT   13   14
+CONECT   14   15
+CONECT   15   16
+CONECT   16   17
+CONECT   17   18
+CONECT   18   19
+CONECT   19   20
+CONECT   20   21
+CONECT   21   22
+END
