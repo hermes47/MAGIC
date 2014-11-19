@@ -16,3 +16,7 @@ OutputFiles/*
 PickledFiles/*
 
 EnergyData/RawData/*
+
+*.xlsx
+
+*.swp
