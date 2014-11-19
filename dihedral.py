@@ -1,5 +1,5 @@
 import genmethods, molecule, os, numpy, rotations, copy
-
+''' Implementing the dihedral improvements process '''
 print(os.getcwd())
 mol = molecule.Molecule()
 genmethods.parsePDB("O1QJ", mol)
