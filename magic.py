@@ -32,7 +32,7 @@ def main(argv):
         if file[0:4] not in MTB_PDB_ROOT_NAMES:
             MTB_PDB_ROOT_NAMES.append(file[0:4])
     try:
-        opts, args = getopt.getopt(argv, "is:",["ifpfile=","parsestring="])
+        opts, args = getopt.getopt(argv, "i:s:",["ifpfile=","parsestring="])
     except getopt.GetoptError:
         print("magic.py -s <StringToParse> -i <IFPFile>")
         sys.exit(2)

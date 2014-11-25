@@ -2,6 +2,7 @@ import random
 import io
 import sys
 import numpy
+from config import ATOMIC_CHARGE
 ''' Molecule class.
 Collection of atoms, bonds, angles, impropers and dihedrals
 '''
@@ -134,6 +135,11 @@ class Molecule(object):
         for atm in self.getAtms():
             a += atm.getDipoleVector()
         return a
+    def getMoleculeCharge(self):
+        charge = 0.
+        for atm in self.getAtms():
+            charge += atm.getCharge()
+        return charge
     def getDipoleMagnitude(self):
         return numpy.linalg.norm(self.getDipole())
     def getMolecularCoordinates(self, dipole=False):
@@ -415,11 +421,47 @@ END''', file=f)
         print(0, file=f)
         print("END", file=f)
         return f.getvalue()
+    
     def printChargeData(self):
         f = io.StringIO()
         for a in self.getAtms():
             print("%s    %6.3f %6.3f %6.3f " %(a.getAtmName()[0], a.getX(), a.getY(), a.getZ()), file=f)
         return f.getvalue()
+    ''' Types are dihedral, rigid, bonds '''
+    def printGAMESS(self,dihed, angle, type="dihedral", solvent=True):
+        atms = {'A':dihed.getAtmAPos(),'B':dihed.getAtmBPos(),
+                'C':dihed.getAtmCPos(),'D':dihed.getAtmDPos()}
+        info = {'runtyp':'OPTIMIZE','charge':int(self.getMoleculeCharge()),'solvent':'\n $PCM SOLVNT=WATER $END',
+                'ifzmat':'3,{A},{B},{C},{D}'.format(**atms),'name':self.getCompndName(),'dihedralangle':angle,
+                'freezevals':str(round(angle,3))}
+        if type == 'rigid': info['runtyp'] = 'ENERGY'
+        if not solvent: info['solvent'] = ''
+        if type == 'bonds':
+            for bond in self.getBonds():
+                rigid = ',\n1,%d,%d' %(bond.getAtmAPos(),bond.getAtmBPos())
+                freeze = str(bond.getBondLength())
+                info['ifzmat'] += rigid
+                info['freezevals'] += ',\n'+freeze
+        f = io.StringIO()
+        #PRINT'12345678901234567890123456789012345678901234567890123456789012345678901234567890
+        print(''' $CONTRL SCFTYP=RHF RUNTYP={runtyp} COORD=CART UNITS=ANGS ICHARG={charge} 
+DFTTYP=B3LYP MAXIT=200 NZVAR=1 $END{solvent}
+ $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 NPFUNC=0 $END
+ $SCF MAXDII=40 $END
+ $STATPT NSTEP=500 DXMAX=0.05 $END
+ $ZMAT DLC=.T. AUTO=.T. 
+IFZMAT(1)={ifzmat} AUTOFV=.T. $END
+ $DATA
+{name} calculation
+C1'''.format(**info), file=f)
+        for atm in self.getAtms():
+            print('%s   %d.0   %f   %f   %f' %(atm.getAtmType(), ATOMIC_CHARGE[atm.getAtmType()], atm.getX(), atm.getY(), atm.getZ()), file=f)
+        print(' $END \n \n ', file=f)
+        return f.getvalue()
+    '''
+ $ZMAT DLC=.T. AUTO=.T. 
+IFZMAT(1)={ifzmat}
+FVALUE(1)={freezevals} $END'''
 
 ''' Atom class.
 Description:
@@ -780,7 +822,7 @@ class Dihedral(object):
     def getDihedTypeCode(self):
         return self.dihedTypeCode
     def getAtms(self):
-        return [self.atmA,self.atmB,self.atmC,self.atmD]
+        return [self.atmA-1,self.atmB-1,self.atmC-1,self.atmD-1]
     ''' Methods for setting/changind data points within the dihedral class '''
     def setAtmAIndex(self, i):
         self.atmA = i + 1

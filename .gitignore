@@ -3,13 +3,13 @@ __pycache__
 
 Documentation/MAGIC_doc.toc
 
-Documentation/MAGIC_doc.synctex.gz
+*.synctex.gz
 
-Documentation/MAGIC_doc.out
+*.out
 
-Documentation/MAGIC_doc.log
+*.log
 
-Documentation/MAGIC_doc.aux
+*.aux
 
 OutputFiles/*
 
@@ -20,3 +20,5 @@ EnergyData/RawData/*
 *.xlsx
 
 *.swp
+
+DihedralFiles/*
