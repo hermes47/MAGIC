@@ -62,7 +62,7 @@ END
 MTBUILDBLSOLUTE
 # building block (residue, nucleotide, etc.)
 # RNME
-PETM
+PET2
 # number of atoms, number of preceding exclusions
 # NMAT, NLIN
    16    0
@@ -70,11 +70,11 @@ PETM
 # ATOM           MAE MSAE
 # atoms
 # ATOM  ANM IACM MASS  CGM   ICGM  MAE  MSAE
-    1  HN3   21    1   0.310    0    4   4   2   3   5
-    2  HN1   21    1   0.310    0    3   4   3   5
-    3  HN2   21    1   0.310    0    2   4   5
-    4  NTM    8   14  -0.270    0    2   5   6
-    5   CA   15    4   0.340    1    2   6   7
+    1  HN3   21    1   0.248    0    4   4   2   3   5
+    2  HN1   21    1   0.248    0    3   4   3   5
+    3  HN2   21    1   0.248    0    2   4   5
+    4  NTM    8   14   0.129    0    2   5   6
+    5   CA   15    4   0.127    1    2   6   7
     6   CB   15    4   0.400    0    2   7   8
     7   OA    3   16  -0.800    0    4   8   9  10  11
     8    P   30   31   1.700    0    4   9  10  11  12

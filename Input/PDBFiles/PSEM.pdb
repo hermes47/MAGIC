@@ -1,0 +1,42 @@
+COMPND    PSEM
+HETATM    1  CO  PSEM    1      -1.172   2.318   0.184  1.00  0.00           C  
+HETATM    2  O2  PSEM    1      -1.666   3.430   0.309  1.00  0.00           O  
+HETATM    3  O1  PSEM    1       0.144   2.100   0.357  1.00  0.00           O  
+HETATM    4  CA  PSEM    1      -1.958   1.067  -0.157  1.00  0.00           C  
+HETATM    5  NT  PSEM    1      -3.444   1.347  -0.306  1.00  0.00           N  
+HETATM    6  HA  PSEM    1      -3.715   2.257   0.080  1.00  0.00           H  
+HETATM    7  HB  PSEM    1      -3.984   0.576   0.138  1.00  0.00           H  
+HETATM    8  HC  PSEM    1      -3.725   1.268  -1.290  1.00  0.00           H  
+HETATM    9  CB  PSEM    1      -1.765   0.069   0.987  1.00  0.00           C  
+HETATM   10  O3  PSEM    1      -2.813  -0.882   1.007  1.00  0.00           O  
+HETATM   11  P   PSEM    1      -2.945  -1.810  -0.321  1.00  0.00           P  
+HETATM   12  O4  PSEM    1      -1.731  -1.551  -1.166  1.00  0.00           O  
+HETATM   13  O5  PSEM    1      -4.304  -1.420  -0.836  1.00  0.00           O  
+HETATM   14  O6  PSEM    1      -2.873  -3.263   0.368  1.00  0.00           O  
+HETATM   15  CC  PSEM    1      -1.784  -3.549   1.240  1.00  0.00           C  
+HETATM   16  CD  PSEM    1      -0.450  -3.774   0.530  1.00  0.00           C  
+HETATM   17  OE  PSEM    1       0.503  -4.348   1.454  1.00  0.00           O  
+HETATM   18  CE  PSEM    1       1.465  -3.526   1.939  1.00  0.00           C  
+HETATM   19  OF  PSEM    1       1.602  -2.337   1.724  1.00  0.00           O  
+CONECT    1    2    3    4                                            
+CONECT    2    1                                                      
+CONECT    3    1                                                      
+CONECT    4    1    5    9                                            
+CONECT    5    4    6    7    8                                       
+CONECT    5                                                           
+CONECT    6    5                                                      
+CONECT    7    5                                                      
+CONECT    8    5                                                      
+CONECT    9    4   10                                                 
+CONECT   10    9   11                                                 
+CONECT   11   10   12   13   14                                       
+CONECT   11                                                           
+CONECT   12   11                                                      
+CONECT   13   11                                                      
+CONECT   14   11   15                                                 
+CONECT   15   14   16                                                 
+CONECT   16   15   17                                                 
+CONECT   17   16   18                                                 
+CONECT   18   17   19                                                 
+CONECT   19   18                                                      
+END

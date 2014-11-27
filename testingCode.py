@@ -1,22 +1,44 @@
 #!/usr/bin/env python3
 
-import genmethods, molecule, copy, numpy, rotations
+import genmethods, molecule, copy, numpy, rotations, statistics
+
+print(statistics.mean([1,2,3,4,5,6,7,8,9,10,0]),statistics.stdev([0,1,2,3,4,5,6,7,8,9,10]))
 
 mol = molecule.Molecule()
-genmethods.parsePDB("OLEM", mol)
-genmethods.parseMTB("OLEM", mol)
+genmethods.parsePDB("O1QJ", mol)
+genmethods.parseMTB("O1QJ", mol)
 tempMol = copy.deepcopy(mol)
 scaleFactor = 2.5
 
 for atm in tempMol.getAtms():
     newCoords = atm.getXYZ(vec=True)*scaleFactor
     atm.setXYZ(newCoords, vec=True)
+
+graph = genmethods.genGraphRep(mol)
+
+def find_all_paths(graph, start, end, path=[]):
+    path = path + [start]
+    if start == end: return [path]
+    if start not in graph: return []
+    paths = []
+    for node in graph[start]:
+        if node not in path:
+            newpaths = find_all_paths(graph, node, end, path)
+            for newpath in newpaths: paths.append(newpath)
+    return paths
+
+def find_all_paths_of_length(graph, length):
+    all_paths = []
+    for sourcenode in graph:
+        for destnode in graph:
+            start = min((sourcenode,destnode))
+            end = max((sourcenode,destnode))
+            paths = find_all_paths(graph, start, end)
+            for path in paths: 
+                if len(path) == length and path not in all_paths: all_paths.append(path)
+    return all_paths
     
-with open("OutputFiles/TEST/Exploded.pdb","w") as fh:
-    fh.write(tempMol.printPDB())
-with open("OutputFiles/TEST/Exploded.mtb","w") as fh:
-    fh.write(tempMol.printMTB())
-    
+find_all_paths_of_length(graph, 4)
 #print("Comparing old parameters with new.\nBonds:")
 #for bond in mol.getBonds():
 #    atmA = bond.getAtmAIndex()

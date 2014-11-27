@@ -1,8 +1,9 @@
 import random
 import io
 import sys
-import numpy
+import numpy, genmethods, openbabel
 from config import ATOMIC_CHARGE
+import rotations
 ''' Molecule class.
 Collection of atoms, bonds, angles, impropers and dihedrals
 '''
@@ -433,35 +434,66 @@ END''', file=f)
                 'C':dihed.getAtmCPos(),'D':dihed.getAtmDPos()}
         info = {'runtyp':'OPTIMIZE','charge':int(self.getMoleculeCharge()),'solvent':'\n $PCM SOLVNT=WATER $END',
                 'ifzmat':'3,{A},{B},{C},{D}'.format(**atms),'name':self.getCompndName(),'dihedralangle':angle,
-                'freezevals':str(round(angle,3))}
+                'freezevals':str(round(angle,3)),'zmat':'','nzvar':3*self.getNumAtms()-6}
+        # use openbabel to generate a Z-matrix that can be manipulated
+        obConversion = openbabel.OBConversion()
+        obConversion.SetInAndOutFormats("pdb","mopin")
+        obMol = openbabel.OBMol()
+        obConversion.ReadString(obMol, self.printPDB())
+        zMat = obConversion.WriteString(obMol).split('\n')[3:-1]
+        zmatLines = []
+        for i in range(len(zMat)):
+            zMat[i] = zMat[i].split()
+        for atm in range(len(zMat)):
+            line = zMat[atm][0]
+            if int(zMat[atm][9]) != 0: line += '  ' + '  '.join(str(x) for x in zMat[atm][1:])
+            elif int(zMat[atm][8]) != 0: line += '  ' + '  '.join(str(x) for x in (zMat[atm][1],zMat[atm][2],zMat[atm][3],zMat[atm][4],zMat[atm][7],zMat[atm][8]))
+            elif int(zMat[atm][7]) != 0: line += '  ' + '  '.join(str(x) for x in zMat[atm][1:2])
+            zmatLines.append(line)
+        info['zmat'] = '\n'.join(x for x in zmatLines)
+        # check that the dihedral is in the z-matrix, and change it if not
+        if int(zMat[atms['D']-1][7]) != atms['C'] or int(zMat[atms['D']-1][8] != atms['B']) or int(zMat[atms['D']-1][9] != atms['A']):
+            zMat[atms['D']-1][7] = str(atms['C'])
+            zMat[atms['D']-1][8] = str(atms['B'])
+            zMat[atms['D']-1][9] = str(atms['A'])
+            zMat[atms['D']-1][5] = round(angle,3)
+            zMat[atms['D']-1][3] = round(rotations.vectAngle(self.getAtmWithIndex(atms['D']-1).getXYZ(vec=True)-self.getAtmWithIndex(atms['C']-1).getXYZ(vec=True), self.getAtmWithIndex(atms['B']-1).getXYZ(vec=True)-self.getAtmWithIndex(atms['C']-1).getXYZ(vec=True))*180/numpy.pi,6)
+            zMat[atms['D']-1][1] = round(numpy.linalg.norm(self.getAtmWithIndex(atms['D']-1).getXYZ(vec=True)-self.getAtmWithIndex(atms['C']-1).getXYZ(vec=True)),6)
         if type == 'rigid': info['runtyp'] = 'ENERGY'
         if not solvent: info['solvent'] = ''
         if type == 'bonds':
             for bond in self.getBonds():
                 rigid = ',\n1,%d,%d' %(bond.getAtmAPos(),bond.getAtmBPos())
-                freeze = str(bond.getBondLength())
+                freeze = round(numpy.linalg.norm(self.getAtmWithIndex(bond.getAtmAIndex()).getXYZ(vec=True)-self.getAtmWithIndex(bond.getAtmBIndex()).getXYZ(vec=True)),6)
                 info['ifzmat'] += rigid
-                info['freezevals'] += ',\n'+freeze
+                info['freezevals'] += ',\n'+str(freeze)
+        izmatLine = []
+        for atm in range(1,len(zMat)):
+            #print(zMat[atm])
+            line = ''
+            if int(zMat[atm][7]) != 0: line += '1,%s,%d' % (zMat[atm][7],atm+1)
+            if int(zMat[atm][8]) != 0: line += ',2,%s,%s,%d' % (zMat[atm][8],zMat[atm][7],atm+1)
+            if int(zMat[atm][9]) != 0: line += ',3,%s,%s,%s,%d' % (zMat[atm][9],zMat[atm][8],zMat[atm][7],atm+1)
+            izmatLine.append(line)
+        info['izmat'] =''+',\n'.join(x for x in izmatLine)
         f = io.StringIO()
         #PRINT'12345678901234567890123456789012345678901234567890123456789012345678901234567890
-        print(''' $CONTRL SCFTYP=RHF RUNTYP={runtyp} COORD=CART UNITS=ANGS ICHARG={charge} 
-DFTTYP=B3LYP MAXIT=200 NZVAR=1 $END{solvent}
+        print(''' $CONTRL SCFTYP=RHF RUNTYP={runtyp} COORD=ZMTMPC UNITS=ANGS ICHARG={charge} 
+DFTTYP=B3LYP MAXIT=200 NZVAR={nzvar} $END{solvent}
  $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 NPFUNC=0 $END
  $SCF MAXDII=40 $END
  $STATPT NSTEP=500 DXMAX=0.05 $END
- $ZMAT DLC=.T. AUTO=.T. 
-IFZMAT(1)={ifzmat} AUTOFV=.T. $END
+ $ZMAT 
+IZMAT(1)={izmat}
+IFZMAT(1)={ifzmat} 
+FVALUE(1)={freezevals} $END
  $DATA
 {name} calculation
-C1'''.format(**info), file=f)
-        for atm in self.getAtms():
-            print('%s   %d.0   %f   %f   %f' %(atm.getAtmType(), ATOMIC_CHARGE[atm.getAtmType()], atm.getX(), atm.getY(), atm.getZ()), file=f)
-        print(' $END \n \n ', file=f)
+C1
+{zmat}
+
+   $END'''.format(**info), file=f)
         return f.getvalue()
-    '''
- $ZMAT DLC=.T. AUTO=.T. 
-IFZMAT(1)={ifzmat}
-FVALUE(1)={freezevals} $END'''
 
 ''' Atom class.
 Description:

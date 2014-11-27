@@ -239,7 +239,7 @@ def parseOVL(rootName, mol):
         for at in atoms[1:]:
             mol.getAtm_Pos(at).setTier(level)
         level += 1
-        
+
 ''' Method for tree searching through a molecule, from a given starting point to determine
 a list of atmIndex that should be deleted as they are the overlapping part of a molecule.
 Recurses on itself until the tree has been searched all the way.
@@ -831,6 +831,37 @@ def atomConnectivity(atmID, mol, kind="all"):
         return dihedrals
     return (bonds,angles,dihedrals)
 
+''' Method for generating a graph representation of a give molecule. '''
+def genGraphRep(mol):
+    graph = {}
+    for atm in mol.getAtms():
+        graph[atm.getAtmIndex()] = []
+    for bond in mol.getBonds():
+        graph[bond.getAtmAIndex()].append(bond.getAtmBIndex())
+        graph[bond.getAtmBIndex()].append(bond.getAtmAIndex())
+    return graph
+
+def find_all_paths(graph, start, end, path=[]):
+    path = path + [start]
+    if start == end: return [path]
+    if start not in graph: return []
+    paths = []
+    for node in graph[start]:
+        if node not in path:
+            newpaths = find_all_paths(graph, node, end, path)
+            for newpath in newpaths: paths.append(newpath)
+    return paths
+
+def find_all_paths_of_length(graph, length):
+    all_paths = []
+    for sourcenode in graph:
+        for destnode in graph:
+            start = min((sourcenode,destnode))
+            end = max((sourcenode,destnode))
+            paths = find_all_paths(graph, start, end)
+            for path in paths: 
+                if len(path) == length and path not in all_paths: all_paths.append(path)
+    return all_paths
     
 if __name__ == "__main__":
     words = stringSanitation("AAAA{5}{BBBB{17}{12fr}CCCC(ZZZZ<MGHTISSK>(1234)AAAA)}")
