@@ -2,43 +2,146 @@
 
 import genmethods, molecule, copy, numpy, rotations, statistics
 
-print(statistics.mean([1,2,3,4,5,6,7,8,9,10,0]),statistics.stdev([0,1,2,3,4,5,6,7,8,9,10]))
+listofthings = '''02KF
+14BU
+1A44
+1ILT
+1SNO
+2LTX
+3RY7
+4UYR
+5DKS
+6298
+6MWF
+78VK
+7YF9
+8AEM
+8DHA
+8KD5
+8KD9
+8OS1
+91ZY
+9BFF
+AHXX
+AUXR
+BBFH
+BEMO
+BWDD
+CW22
+DI3H
+DZVR
+EQTC
+FR4A
+G9V4
+GHAD
+GW44
+GZ22
+H177
+HPEL
+HZDP
+KBD8
+KKOI
+KRQ0
+KTNA
+LJLH
+LQ0B
+M2VL
+MPP9
+MV9V
+MZBA
+NJ6K
+NJ9Y
+OMLB
+P1NK
+PPB3
+PYR0
+QD97
+QWBX
+SCLN
+UP5Y
+V8G9
+VQ99
+WV7K
+X4GE
+XBMO
+Y0OQ
+YAG5
+YREK
+Z9EJ
+ZJ1H
+ZT2R'''.splitlines()
+cis = []
+single = []
+double = []
+triple = []
+four = []
+for item in listofthings:
+    mol = molecule.Molecule()
+    pdbData = genmethods.loadFile(item, 'OutputFiles/'+item+'/', '.pdb')
+    mtbData = genmethods.loadFile(item, 'OutputFiles/'+item+'/', '.mtb')
+    genmethods.parsePDB(item, mol, passedData=pdbData)
+    genmethods.parseMTB(item, mol, passedData=mtbData)
+    count = 0
+    for imp in mol.getImpropers():
+        if imp.getImpTypeCode() == 4:
+            count += 1
+    if count == 0: cis.append(item)
 
-mol = molecule.Molecule()
-genmethods.parsePDB("O1QJ", mol)
-genmethods.parseMTB("O1QJ", mol)
-tempMol = copy.deepcopy(mol)
-scaleFactor = 2.5
 
-for atm in tempMol.getAtms():
-    newCoords = atm.getXYZ(vec=True)*scaleFactor
-    atm.setXYZ(newCoords, vec=True)
+for item in cis:
+    mol = molecule.Molecule()
+    pdbData = genmethods.loadFile(item, 'OutputFiles/'+item+'/', '.pdb')
+    mtbData = genmethods.loadFile(item, 'OutputFiles/'+item+'/', '.mtb')
+    genmethods.parsePDB(item, mol, passedData=pdbData)
+    genmethods.parseMTB(item, mol, passedData=mtbData)
+    count = 0
+    for imp in mol.getImpropers(): count += 1
+    if count == 2: single.append(item)
+    if count == 3: double.append(item)
+    if count == 4: triple.append(item)
+    if count == 5: four.append(item)
 
-graph = genmethods.genGraphRep(mol)
+print(len(single),len(double),len(triple),len(four))
+print(double)
+        
 
-def find_all_paths(graph, start, end, path=[]):
-    path = path + [start]
-    if start == end: return [path]
-    if start not in graph: return []
-    paths = []
-    for node in graph[start]:
-        if node not in path:
-            newpaths = find_all_paths(graph, node, end, path)
-            for newpath in newpaths: paths.append(newpath)
-    return paths
-
-def find_all_paths_of_length(graph, length):
-    all_paths = []
-    for sourcenode in graph:
-        for destnode in graph:
-            start = min((sourcenode,destnode))
-            end = max((sourcenode,destnode))
-            paths = find_all_paths(graph, start, end)
-            for path in paths: 
-                if len(path) == length and path not in all_paths: all_paths.append(path)
-    return all_paths
-    
-find_all_paths_of_length(graph, 4)
+#print(statistics.mean([1,2,3,4,5,6,7,8,9,10,0]),statistics.stdev([0,1,2,3,4,5,6,7,8,9,10]))
+#
+#mol = molecule.Molecule()
+#genmethods.parsePDB("O1QJ", mol)
+#genmethods.parseMTB("O1QJ", mol)
+#tempMol = copy.deepcopy(mol)
+#scaleFactor = 2.5
+#
+#for atm in tempMol.getAtms():
+#    newCoords = atm.getXYZ(vec=True)*scaleFactor
+#    atm.setXYZ(newCoords, vec=True)
+#
+#graph = genmethods.genGraphRep(mol)
+#
+#def find_all_paths(graph, start, end, path=[]):
+#    path = path + [start]
+#    if start == end: return [path]
+#    if start not in graph: return []
+#    paths = []
+#    for node in graph[start]:
+#        if node not in path:
+#            newpaths = find_all_paths(graph, node, end, path)
+#            for newpath in newpaths: paths.append(newpath)
+#    return paths
+#
+#def find_all_paths_of_length(graph, length):
+#    all_paths = []
+#    for sourcenode in graph:
+#        for destnode in graph:
+#            start = min((sourcenode,destnode))
+#            end = max((sourcenode,destnode))
+#            paths = find_all_paths(graph, start, end)
+#            for path in paths: 
+#                if len(path) == length and path not in all_paths: all_paths.append(path)
+#    return all_paths
+#    
+#find_all_paths_of_length(graph, 4)
 #print("Comparing old parameters with new.\nBonds:")
 #for bond in mol.getBonds():
 #    atmA = bond.getAtmAIndex()

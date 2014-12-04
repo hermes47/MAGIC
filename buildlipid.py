@@ -58,6 +58,7 @@ def MAGIC(ifpFile, connectString, *args):
         with open("OutputFiles/"+output+"/"+output+".pdb", "w") as fh:
             fh.write(LOADED_MOLECULES[output].printPDB())
         with open("OutputFiles/"+output+"/"+output+".mtb", "w") as fh:
+            fh.write('#'+connectString+'\n')
             fh.write(LOADED_MOLECULES[output].printMTB())
         with open("OutputFiles/"+output+"/"+output+".dat", "w") as fh:
             fh.write(LOADED_MOLECULES[output].printChargeData())

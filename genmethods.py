@@ -3,6 +3,7 @@ from random import randrange
 from config import NAME_LENGTH, RANDOM_NAME_CHARS, MTB_PDB_ROOT_NAMES, NUM_TIERS, CHECKED_ATOMS, LOADED_MOLECULES, ROOT_DIRECTORY, STRING_BREAK_CHARACTERS, ATOMIC_RADII, CHARGE_RULES
 from copy import copy
 from builtins import range
+import ifp
 import numpy
 import os
 ''' General purpose methods that aren't specific  to any given class '''
@@ -50,8 +51,52 @@ def loadFile(rootName, folder, fileExtension, removeComments='#'):
     return shortFile
 
 ''' Method for parsing an IFP file. '''
-def parseIFP(rootName, folder):
-    ifpData = loadFile(rootName, "Input/", ".ifp", True)
+def parseIFP(forcefield, folder):
+    ifpData = loadFile(forcefield, folder, ".ifp")
+    ffData = ifp.IFP()
+    blocks = {'TITLE':False,'FORCEFIELD':False,'MASSATOMTYPECODE':False,'BONDSTRETCHTYPECODE':False,'BONDANGLEBENDTYPECODE':False,
+              'IMPDIHEDRALTYPECODE':False,'TORSDIHEDRALTYPECODE':False,'SINGLEATOMLJPAIR':False,'MIXEDATOMLJPAIR':False,'SPECATOMLJPAIR':False}
+    for line in ifpData:
+        if line == 'END':
+            for i in blocks: blocks[i] = False
+        elif line in blocks: blocks[line] = True
+        elif blocks['TITLE']: ffData.addTitleLine(line)
+        elif blocks['FORCEFIELD']: ffData.setForcefield(line)
+        elif blocks['MASSATOMTYPECODE']:
+            # first line is to set counts and stuff, but we can wag it
+            datap = line.split()
+            if len(datap) == 2: pass
+            else:
+                # code  mass  name
+                ffData.addMassAtomType({'N':int(datap[0]),'ATMAS':float(datap[1]),'ATMASN':datap[2]})
+        elif blocks['BONDSTRETCHTYPECODE']:
+            datap = line.split()
+            if len(datap) == 2: pass
+            else:
+                # code quartic harmonic ideal
+                ffData.addBondStretchType({'N':int(datap[0]),'CB':float(datap[1]),'HB':float(datap[2]),'B0':float(datap[3])})
+        elif blocks['BONDANGLEBENDTYPECODE']:
+            datap = line.split()
+            if len(datap) == 2: pass
+            else:
+                # code non-harmonic harmonic ideal
+                ffData.addBondAngleBendType({'N':int(datap[0]),'CT':float(datap[1]),'CHT':float(datap[2]),'T0':float(datap[3])})
+        elif blocks['IMPDIHEDRALTYPECODE']:
+            datap = line.split()
+            if len(datap) == 2: pass
+            else:
+                # code k ideal
+                ffData.addImpDihedralType({'N':int(datap[0]),'CQ':float(datap[1]),'Q0':float(datap[2])})
+        elif blocks['TORSDIHEDRALTYPECODE']:
+            datap = line.split()
+            if len(datap) == 2: pass
+            else:
+                # code k ideal
+                ffData.addTorsDihedralType({'N':int(datap[0]),'CP':float(datap[1]),'PD':float(datap[2]),'MP':int(datap[3])})
+        elif blocks['SINGLEATOMLJPAIR']: ffData.addSingleAtomLJPair(line)
+        elif blocks['MIXEDATOMLJPAIR']: ffData.addMixedAtomLJPair(line)
+        elif blocks['SPECATOMLJPAIR']: ffData.addSpecAtomLJPair(line)
+    return(ffData)
 
 ''' Method for parsing a PDB file.
 Takes a rootname and a molecule as arguments.
@@ -105,9 +150,11 @@ def parsePDB(rootName, mol, hasMTB=False, passedData=None):
 Takes a rootName and a molecule as arguments. Optional argument hasPDB=True for if done PDB parsing or not.
 Parse the MTB file and adds the info to the required atoms, bonds, etc.
 Returns the molecule.'''
-def parseMTB(rootName, mol, hasPDB=True):
+def parseMTB(rootName, mol, hasPDB=True, passedData=None):
     # load the mtb file into memory
-    mtbData = loadFile(rootName, "Input/MTBFiles/", ".mtb")
+    if not passedData:
+        mtbData = loadFile(rootName, "Input/MTBFiles/", ".mtb")
+    else: mtbData = passedData
     # now read in the mtb file line by line
     boolBlock = {"TITLE":False,"FORCEFIELD":False,"PHYSICALCONSTANTS":False,"LINKEXCLUSIONS":False,"MTBUILDBLSOLUTE":False}
     counts = {"atoms":0,"bonds":0,"dihedrals":0,"impropers":0,"angles":0,"LJExceptions":0,"locating":0}
@@ -680,18 +727,18 @@ def runGROMOS(fileName, inputString):
     os.system('cat "../../OutputFiles/%s/%s.mtb" >> 54A7.mtb' %(fileName, fileName))
     # generate a topology file
     print("-Making the topology")
-    topologyGenerate = 'make_top @build 54A7.mtb @param 54A7_old.ifp @seq %s @solv H2O > %s.top 2> /dev/null' %(fileName, fileName)
+    topologyGenerate = 'make_top @build 54A7.mtb @param 54A7_old.ifp @seq %s @solv H2O > %s.top' %(fileName, fileName)
     os.system(topologyGenerate)
     # convert the PDB into a CNF
-    os.system('pdb2g96 @topo %s.top @pdb %s.pdb @lib pdb2g96.lib > %s.cnf 2> /dev/null' %(fileName, fileName, fileName))
+    os.system('pdb2g96 @topo %s.top @pdb %s.pdb @lib pdb2g96.lib > %s.cnf' %(fileName, fileName, fileName))
     # modify the energymin.imd file to account for the number of atoms in the molecule
     os.system("sed -i 's/NUMOFATOMS/%d/' energymin.imd" % LOADED_MOLECULES[fileName].getNumAtms())
     os.system("sed -i 's/MOLECULESHORTCODE/%s/' energymin.imd" % inputString)
     # run the energy minimisation
     print("-Running the energy minimisation for a maximum of 2500 steps")
-    os.system('/usr/md++-1.2.3/bin/md @topo %s.top @conf %s.cnf @fin %s_min.cnf @input energymin.imd > energymin.omd' %(fileName, fileName, fileName))
+    os.system('md @topo %s.top @conf %s.cnf @fin %s_min.cnf @input energymin.imd' %(fileName, fileName, fileName))
     # frameout the minimised structure into PDB and mv it into the outputfiles
-    os.system('frameout @topo %s.top @pbc v @outformat pdb @notimeblock @traj %s_min.cnf > /dev/null' %(fileName, fileName))
+    os.system('frameout @topo %s.top @pbc v @outformat pdb @notimeblock @traj %s_min.cnf' %(fileName, fileName))
     print("-Saving the minimised structure as %s_minimised.pdb" % fileName)
     os.system("sed -i '1,2d' FRAME_00001.pdb")
     os.system('mv FRAME_00001.pdb "../../OutputFiles/%s/%s_minimised.pdb"' % (fileName, fileName))
@@ -864,5 +911,6 @@ def find_all_paths_of_length(graph, length):
     return all_paths
     
 if __name__ == "__main__":
+    parseIFP('54A7', './')
     words = stringSanitation("AAAA{5}{BBBB{17}{12fr}CCCC(ZZZZ<MGHTISSK>(1234)AAAA)}")
     print(words)

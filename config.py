@@ -16,7 +16,7 @@ SAVED_PICKLED_FILES = os.listdir(path=ROOT_DIRECTORY+'/PickledFiles/')
 ''' Atomic Radii of the elements. measured in angstroms. Sourced from Wikipedia'''
 ATOMIC_RADII = {"H":0.53,"C":0.67,"N":0.56,"O":0.48,"P":0.98,"F":0.42,"S":0.88,"Cl":0.79,"Cu":1.45,
                 "Na":1.90, "Mg":1.45, "Si":1.11, "Ar":0.71, "Ca":1.94, "Fe":1.56, "Zn":1.42, "Br":0.94}
-ATOMIC_CHARGE = {"H":1.0,"C":6.0}
+ATOMIC_CHARGE = {"H":1.0,"C":6.0,"N":7.0,"O":8.0,"P":15.0}
 ''' Charge redistribution rules on/off switching'''
 CHARGE_RULES = {"rule1":False,"rule2":True,"rule3":False,"rule4":True,"rule5":True,"rule6":True,"rule7":True}
 ''' Prealign molecules'''
@@ -27,6 +27,12 @@ FURTHER_ALIGNMENT_STYLE = "sweetspot"
 MAX_ALIGNMENT_COUNT = 100
 ''' Number of steps in rotation about the dihedral. Helps if its 2^n'''
 NUM_DIHED_ROTATE = 32
+
+K_RMSD_TOL = 2.479 # kJ/mol (k_bT)
+PHI_ABS_TOL = 10.
+K_PER_VAR_TOL = 0.05
+FFT_TARGET_DP = 16384
+PHI_ROUND_VAL = 5.0
 
 # the list of checked atoms. used for graphSearch. should be extracted in the graph search function
 CHECKED_ATOMS = []

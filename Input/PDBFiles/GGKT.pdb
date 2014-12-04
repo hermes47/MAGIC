@@ -2,11 +2,11 @@ HEADER    UNCLASSIFIED                            13-Oct-14
 TITLE     UNITED ATOM STRUCTURE FOR MOLECULE UNK                                
 AUTHOR    GROMOS AUTOMATIC TOPOLOGY BUILDER REVISION 2014-09-22
 AUTHOR   2  http://compbio.biosci.uq.edu.au/atb
-HETATM    1   C4 GGKT    0      -0.151  -0.905   0.000  1.00  0.00           C
-HETATM    2  Cl5 GGKT    0      -1.701   0.015   0.000  1.00  0.00          Cl
-HETATM    3   C2 GGKT    0       1.007   0.060   0.000  1.00  0.00           C
-HETATM    4   O3 GGKT    0       0.801   1.250   0.000  1.00  0.00           O
-HETATM    5   C1 GGKT    0       2.421  -0.460   0.000  1.00  0.00           C
+HETATM    1   C4 GGKT    1      -0.151  -0.905   0.000  1.00  0.00           C
+HETATM    2  Cl5 GGKT    1      -1.701   0.015   0.000  1.00  0.00          Cl
+HETATM    3   C2 GGKT    1       1.007   0.060   0.000  1.00  0.00           C
+HETATM    4   O3 GGKT    1       0.801   1.250   0.000  1.00  0.00           O
+HETATM    5   C1 GGKT    1       2.421  -0.460   0.000  1.00  0.00           C
 CONECT    1    2    3
 CONECT    2    1
 CONECT    3    1    4    5

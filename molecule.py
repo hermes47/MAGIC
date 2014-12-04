@@ -169,6 +169,8 @@ class Molecule(object):
         self.precedingExclusions = pe
     def setNumJoiningPoints(self, jp):
         self.numJoiningPoints = jp
+    def clearDihedrals(self):
+        self.dihedrals = []
     ''' Methods for adding items to the lists '''
     def addAtm(self, atmData, copyAtm=False):
         if not copyAtm:
@@ -429,9 +431,12 @@ END''', file=f)
             print("%s    %6.3f %6.3f %6.3f " %(a.getAtmName()[0], a.getX(), a.getY(), a.getZ()), file=f)
         return f.getvalue()
     ''' Types are dihedral, rigid, bonds '''
-    def printGAMESS(self,dihed, angle, type="dihedral", solvent=True):
-        atms = {'A':dihed.getAtmAPos(),'B':dihed.getAtmBPos(),
-                'C':dihed.getAtmCPos(),'D':dihed.getAtmDPos()}
+    def printGAMESS(self,dihed, angle, kind="dihedral", solvent=True):
+        if type(dihed) is list:
+            atms = {'A':dihed[0]+1, 'B':dihed[1]+1, 'C':dihed[2]+1, 'D':dihed[3]+1}
+        else:
+            atms = {'A':dihed.getAtmAPos(),'B':dihed.getAtmBPos(),
+                    'C':dihed.getAtmCPos(),'D':dihed.getAtmDPos()}
         info = {'runtyp':'OPTIMIZE','charge':int(self.getMoleculeCharge()),'solvent':'\n $PCM SOLVNT=WATER $END',
                 'ifzmat':'3,{A},{B},{C},{D}'.format(**atms),'name':self.getCompndName(),'dihedralangle':angle,
                 'freezevals':str(round(angle,3)),'zmat':'','nzvar':3*self.getNumAtms()-6}
@@ -459,9 +464,12 @@ END''', file=f)
             zMat[atms['D']-1][5] = round(angle,3)
             zMat[atms['D']-1][3] = round(rotations.vectAngle(self.getAtmWithIndex(atms['D']-1).getXYZ(vec=True)-self.getAtmWithIndex(atms['C']-1).getXYZ(vec=True), self.getAtmWithIndex(atms['B']-1).getXYZ(vec=True)-self.getAtmWithIndex(atms['C']-1).getXYZ(vec=True))*180/numpy.pi,6)
             zMat[atms['D']-1][1] = round(numpy.linalg.norm(self.getAtmWithIndex(atms['D']-1).getXYZ(vec=True)-self.getAtmWithIndex(atms['C']-1).getXYZ(vec=True)),6)
-        if type == 'rigid': info['runtyp'] = 'ENERGY'
+        if kind == 'rigid': 
+            info['runtyp'] = 'ENERGY'
+            cartlines = '\n'.join("%s  %f  %6.3f %6.3f %6.3f"%(a.getAtmName(), ATOMIC_CHARGE[a.getAtmType()], a.getX(), a.getY(), a.getZ()) for a in self.getAtms())
+            info['zmat'] = cartlines
         if not solvent: info['solvent'] = ''
-        if type == 'bonds':
+        if kind == 'bonds':
             for bond in self.getBonds():
                 rigid = ',\n1,%d,%d' %(bond.getAtmAPos(),bond.getAtmBPos())
                 freeze = round(numpy.linalg.norm(self.getAtmWithIndex(bond.getAtmAIndex()).getXYZ(vec=True)-self.getAtmWithIndex(bond.getAtmBIndex()).getXYZ(vec=True)),6)
@@ -478,7 +486,7 @@ END''', file=f)
         info['izmat'] =''+',\n'.join(x for x in izmatLine)
         f = io.StringIO()
         #PRINT'12345678901234567890123456789012345678901234567890123456789012345678901234567890
-        print(''' $CONTRL SCFTYP=RHF RUNTYP={runtyp} COORD=ZMTMPC UNITS=ANGS ICHARG={charge} 
+        if info['runtyp'] == 'OPTIMIZE': print(''' $CONTRL SCFTYP=RHF RUNTYP={runtyp} COORD=ZMTMPC UNITS=ANGS ICHARG={charge} 
 DFTTYP=B3LYP MAXIT=200 NZVAR={nzvar} $END{solvent}
  $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 NPFUNC=0 $END
  $SCF MAXDII=40 $END
@@ -491,8 +499,17 @@ FVALUE(1)={freezevals} $END
 {name} calculation
 C1
 {zmat}
-
-   $END'''.format(**info), file=f)
+ $END'''.format(**info), file=f)
+        else: print(''' $CONTRL SCFTYP=RHF RUNTYP={runtyp} COORD=CART UNITS=ANGS ICHARG={charge}
+DFTTYP=B3LYP MAXIT=200 $END{solvent}
+ $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 NPFUNC=0 $END
+ $SCF MAXDII=40 $END
+ $STATPT NSTEP=500 DXMAX=0.05 $END
+ $DATA
+{name} calculation
+C1
+{zmat}
+ $END'''.format(**info), file=f)
         return f.getvalue()
 
 ''' Atom class.

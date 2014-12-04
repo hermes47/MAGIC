@@ -128,7 +128,7 @@ def rootBranchJoin(root, branchString):
     # split the branchString into its member branch names of NAME_LENGTH length
     branches = genmethods.fragmentString(branchString)
     # perform sanity check to make sure root has enough joining points for all the branches
-    if LOADED_MOLECULES[root].getNumJoiningPoints() >= len(branches):
+    if LOADED_MOLECULES[root].getNumJoiningPoints() >= len(branches) or True:
         for bra in branches:
             ## determine the long axis of the molecule
             #longAxis = rotations.longAxis(LOADED_MOLECULES[bra])
